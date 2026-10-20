@@ -126,6 +126,29 @@ textarea{resize:vertical;line-height:1.45}
 .x{border:1px solid var(--ui-linea);background:var(--blanco);border-radius:8px;width:36px;cursor:pointer;color:var(--gris);flex:0 0 auto}
 .x:hover{color:var(--Rojo);border-color:var(--Rojo)}
 
+/* Evidencia adjunta */
+.evid{display:flex;flex-direction:column;gap:8px;min-width:0}
+.drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:2px dashed #E3C77A;background:var(--amar);border-radius:10px;padding:16px;cursor:pointer;text-align:center;transition:.15s}
+.drop:hover,.drop.over{border-color:var(--FondoBarra);background:#FFF0D0}
+.drop:focus-within{outline:3px solid rgba(236,141,7,.35);outline-offset:2px}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop b{color:var(--tinta);font-size:13.5px}
+.drop small{color:var(--gris);font-size:11.5px}
+.egrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.ecard{border:1px solid var(--ui-linea);border-radius:10px;overflow:hidden;background:var(--blanco);display:flex;flex-direction:column;min-width:0}
+.eth{height:110px;background:#F4F5F3;display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--gris);font-size:11px;text-align:center;padding:0 6px}
+.eth img{width:100%;height:100%;object-fit:cover;display:block}
+.eth.ico{font-weight:800;font-size:18px;color:var(--tinta);letter-spacing:.5px;background:var(--amar)}
+.einfo{padding:8px 10px 0;display:flex;flex-direction:column;min-width:0}
+.ename{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.einfo small{color:var(--gris);font-size:11px;font-variant-numeric:tabular-nums}
+.ebtn{display:flex;gap:6px;padding:8px 10px;justify-content:space-between;align-items:center}
+.ebtn .x{height:30px}
+.pevid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.pevid figure{margin:0;border:1px solid var(--ui-linea);border-radius:8px;padding:6px;text-align:center;break-inside:avoid;page-break-inside:avoid}
+.pevid img{max-width:100%;max-height:62mm;object-fit:contain}
+.pevid figcaption{font-size:10px;color:var(--gris);margin-top:4px;overflow-wrap:anywhere}
+
 /* Ishikawa por categorías */
 .cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .cats .sub{margin:0}
@@ -219,6 +242,7 @@ body.solo::before{display:none}
   .tarjeta{padding:16px 14px}.tab{padding:9px 12px}
   .why .campo.inline{grid-template-columns:1fr;gap:3px}
   #print{padding:14px}
+  .pevid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:620px){
   .ditem{grid-template-columns:36px minmax(0,1fr)}
@@ -609,9 +633,9 @@ const today = () => { const t = new Date(); t.setMinutes(t.getMinutes() - t.getT
 const hhmm = () => new Date().toLocaleTimeString('es-CL', {hour:'2-digit', minute:'2-digit'});
 
 const emptyCauses = () => Object.fromEntries(CATS.map(c => [c.k, [{id:uid(), t:''}]]));
-const newDev = () => ({id:uid(), creada:today(), titulo:'', ambito:'', que:'', donde:'', impacto:'', evidencia:'', causas:emptyCauses(), whys:{}, acciones:{}});
+const newDev = () => ({id:uid(), creada:today(), titulo:'', ambito:'', que:'', donde:'', impacto:'', evidencia:'', evid:[], causas:emptyCauses(), whys:{}, acciones:{}});
 const defaults = () => ({meta:{nombre:'', area:'', resp:'', fecha:''}, devs:[], conclusiones:''});
-const devHasContent = x => !!x && (TEXT_KEYS.some(k => k !== 'ambito' && String(x[k] || '').trim()) ||
+const devHasContent = x => !!x && ((Array.isArray(x.evid) && x.evid.length > 0) || TEXT_KEYS.some(k => k !== 'ambito' && String(x[k] || '').trim()) ||
   (x.causas && typeof x.causas === 'object' && Object.values(x.causas).some(a => Array.isArray(a) && a.some(y => y && String(y.t || '').trim()))));
 
 function normDev(x){
@@ -624,6 +648,7 @@ function normDev(x){
     t.causas[c.k] = a.length ? a : [{id:uid(), t:''}];
   }
   try { t.whys = (x.whys && typeof x.whys === 'object') ? JSON.parse(JSON.stringify(x.whys)) : {}; } catch(e) { t.whys = {}; }
+  t.evid = Array.isArray(x.evid) ? x.evid.filter(e => e && typeof e.id === 'string').map(e => ({id:e.id, name:String(e.name || 'archivo'), type:String(e.type || ''), size:+e.size || 0, added:String(e.added || '')})) : [];
   try { t.acciones = (x.acciones && typeof x.acciones === 'object') ? JSON.parse(JSON.stringify(x.acciones)) : {}; } catch(e) { t.acciones = {}; }
   for (const id in t.whys) { const w = t.whys[id]; if (!w || typeof w !== 'object') { delete t.whys[id]; continue; } if (!Array.isArray(w.w)) w.w = []; w.w = w.w.map(v => String(v || '')); w.root = String(w.root || ''); }
   for (const id in t.acciones) { if (!Array.isArray(t.acciones[id])) { delete t.acciones[id]; continue; } t.acciones[id] = t.acciones[id].filter(Boolean).map(a => ({a:String(a.a || ''), r:String(a.r || ''), f:String(a.f || ''), i:String(a.i || ''), e:ESTADOS.includes(a.e) ? a.e : 'Pendiente'})); }
@@ -742,6 +767,87 @@ const ask = (title, html, ok = 'Aceptar', danger = false) => choose(title, html,
 const inform = (title, html) => choose(title, html, [{v:true, label:'Entendido', cls:'pri'}]);
 let toastT = null;
 function toast(t){ const el = document.getElementById('toast'); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, 3200); }
+
+/* ---------- archivos de evidencia (se guardan en este equipo, IndexedDB) ---------- */
+const FDB = (() => {
+  let p;
+  const open = () => p || (p = new Promise((res, rej) => {
+    try { const r = indexedDB.open('mirs-desviaciones-adjuntos', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('files');
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); } catch(e) { rej(e); }
+  }));
+  const tx = async (mode, fn) => { const db = await open(); return new Promise((res, rej) => {
+    const t = db.transaction('files', mode), out = fn(t.objectStore('files'));
+    t.oncomplete = () => res(out ? out.result : undefined); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error); }); };
+  return {
+    put:(id, blob) => tx('readwrite', s => { s.put(blob, id); }),
+    get:id => tx('readonly', s => s.get(id)),
+    del:ids => tx('readwrite', s => { ids.forEach(i => s.delete(i)); }),
+    clear:() => tx('readwrite', s => { s.clear(); })
+  };
+})();
+const MAXF = 15 * 1024 * 1024;
+const urlCache = {};
+const fsize = n => n < 1024 ? n + ' B' : n < 1048576 ? Math.round(n / 1024) + ' KB' : (n / 1048576).toFixed(1).replace('.', ',') + ' MB';
+const extOf = n => { const m = /\.([a-z0-9]{1,5})$/i.exec(n || ''); return m ? m[1].toUpperCase() : 'ARCHIVO'; };
+const isImg = e => /^image\/(jpeg|png|webp|gif|bmp)$/i.test(e.type || '');
+async function blobUrl(id){ if (urlCache[id]) return urlCache[id]; const b = await FDB.get(id); if (!b) return null; return urlCache[id] = URL.createObjectURL(b); }
+const toDataUrl = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsDataURL(b); });
+function fromDataUrl(u){
+  const m = /^data:([^;,]*)(;base64)?,(.*)$/s.exec(u || ''); if (!m) return null;
+  if (!m[2]) return new Blob([decodeURIComponent(m[3])], {type:m[1]});
+  const bin = atob(m[3]), a = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+  return new Blob([a], {type:m[1] || 'application/octet-stream'});
+}
+const loadImg = f => new Promise((res, rej) => { const u = URL.createObjectURL(f), i = new Image(); i.onload = () => { URL.revokeObjectURL(u); res(i); }; i.onerror = e => { URL.revokeObjectURL(u); rej(e); }; i.src = u; });
+async function prepFile(f){
+  const type = f.type || '';
+  if (/^image\//.test(type) && !/svg|gif/.test(type)) {
+    try {
+      const im = await loadImg(f), w = im.naturalWidth, h = im.naturalHeight, k = Math.min(1, 1600 / Math.max(w, h));
+      if (k < 1 || f.size > 900000 || !isImg({type})) {
+        const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k));
+        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
+        const b = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.82));
+        if (b && (b.size < f.size || !isImg({type}))) return {blob:b, name:(f.name || 'foto').replace(/\.[^.]+$/, '') + '.jpg', type:'image/jpeg'};
+      }
+    } catch(e) {}
+  }
+  return {blob:f, name:f.name || 'archivo', type:type || 'application/octet-stream'};
+}
+async function addFiles(di, files){
+  const d = S.devs[di]; if (!d || !files.length) return;
+  d.evid = d.evid || [];
+  toast('Adjuntando ' + files.length + ' archivo(s)…');
+  let n = 0; const big = [];
+  for (const f of files){
+    if (f.size > 40 * 1024 * 1024){ big.push(f.name); continue; }
+    const p = await prepFile(f);
+    if (p.blob.size > MAXF){ big.push(f.name); continue; }
+    const id = 'f' + uid();
+    try { await FDB.put(id, p.blob); }
+    catch(e){ console.error(e); inform('No se pudo guardar el archivo', 'Este navegador no permitió guardar «' + esc(f.name) + '». Puede faltar espacio o estar en una ventana privada.'); break; }
+    d.evid.push({id, name:p.name, type:p.type, size:p.blob.size, added:today()}); n++;
+  }
+  save(); if (ui.tab === 'dev' && ui.di === di) render();
+  if (n) toast(n + ' archivo(s) adjuntado(s)');
+  if (big.length) inform('Archivos muy grandes', 'No se adjuntaron (máximo 15 MB cada uno):<ul>' + big.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>');
+}
+function fillThumbs(){
+  app.querySelectorAll('[data-thumb]').forEach(async el => {
+    try { const u = await blobUrl(el.dataset.thumb); el.innerHTML = u ? `<img src="${u}" alt="">` : '<span>No está en este equipo</span>'; }
+    catch(e){ el.innerHTML = '<span>No disponible</span>'; }
+  });
+}
+async function evidUrls(asData){
+  const m = {};
+  for (const d of S.devs) for (const e of (d.evid || [])) if (isImg(e)) {
+    try { if (asData){ const b = await FDB.get(e.id); if (b) m[e.id] = await toDataUrl(b); } else { const u = await blobUrl(e.id); if (u) m[e.id] = u; } } catch(x) {}
+  }
+  return m;
+}
+const imgsLoaded = root => Promise.all([...root.querySelectorAll('img')].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
 
 /* ---------- datos derivados ---------- */
 const catName = k => CATS.find(c => c.k === k).n;
@@ -888,7 +994,7 @@ function listItems(){
         <button class="dlink${d.titulo.trim() ? '' : ' vacio'}" data-act="open" data-i="${i}">${esc(d.titulo.trim() || 'Sin título todavía')}</button>
         ${meta ? `<div class="dmeta">${meta}</div>` : ''}
         <div class="prog" title="Descripción · Ishikawa · 5 porqués · Plan de acción">${st.segs.map((ok, k) => `<i class="${ok ? 'ok' : ''}" title="${STEPS[k]}${ok ? ' ✓' : ''}"></i>`).join('')}</div>
-        <div class="dchips">${st.nC} causa(s) inmediata(s) · ${st.roots}/${st.nC} causa(s) raíz · ${st.acc} acción(es)${st.acc ? ` (${st.done} cerrada${st.done === 1 ? '' : 's'})` : ''}</div>
+        <div class="dchips">${st.nC} causa(s) inmediata(s) · ${st.roots}/${st.nC} causa(s) raíz · ${st.acc} acción(es)${st.acc ? ` (${st.done} cerrada${st.done === 1 ? '' : 's'})` : ''}${(d.evid || []).length ? ` · 📎 ${d.evid.length} archivo(s)` : ''}</div>
       </div>
       <div class="dside"><span class="pill ${st.est[1]}">${st.est[0]}</span>
         <button class="btn sm" data-act="open" data-i="${i}">Abrir</button>
@@ -936,8 +1042,21 @@ function step1(di){
     ${fld('Dónde y cuándo se detectó', p + 'donde')}
     ${fld('Qué ocurrió (estándar esperado vs. situación real)', p + 'que', {ta:1, rows:4, cls:'full'})}
     ${fld('Impacto (seguridad, calidad, producción, costo, ambiente)', p + 'impacto', {ta:1})}
-    ${fld('Evidencia (registro, dato, foto, informe)', p + 'evidencia', {ta:1})}
+    ${fld('Evidencia (registro, dato, foto, informe)', p + 'evidencia', {ta:1, ph:'Describe la evidencia y adjunta los archivos abajo'})}
+    ${evidBlock(di)}
   </div>`;
+}
+function evidBlock(di){
+  const ev = S.devs[di].evid || [];
+  return `<div class="full evid"><div class="campo"><span>Archivos de evidencia${ev.length ? ' (' + ev.length + ')' : ''}</span></div>
+    <label class="drop" id="drop"><input type="file" id="fEvid" data-d="${di}" multiple accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.msg,.eml,.zip">
+      <b>＋ Adjuntar archivos</b><small>Toca para elegir o arrastra aquí · fotos, PDF, Word, Excel… · máx. 15 MB por archivo</small></label>
+    ${ev.length ? `<div class="egrid">${ev.map(x => `<div class="ecard">
+      ${isImg(x) ? `<div class="eth" data-thumb="${x.id}"></div>` : `<div class="eth ico">${esc(extOf(x.name))}</div>`}
+      <div class="einfo"><span class="ename" title="${esc(x.name)}">${esc(x.name)}</span><small>${fsize(x.size)}${x.added ? ' · ' + fdate(x.added) : ''}</small></div>
+      <div class="ebtn"><button class="btn sm" data-act="evopen" data-d="${di}" data-id="${x.id}">${isImg(x) || /pdf/.test(x.type) ? 'Ver' : 'Descargar'}</button>
+        <button class="x" title="Quitar archivo" aria-label="Quitar archivo" data-act="evdel" data-d="${di}" data-id="${x.id}">✕</button></div></div>`).join('')}</div>` : ''}
+    <p class="nota" style="margin:0">Los archivos se guardan en este equipo. Para enviarlos a un compañero, «Exportar» los incluye en el archivo .json.</p></div>`;
 }
 
 function step2(di){
@@ -1019,6 +1138,7 @@ function render(){
   else if (ui.tab === 'dev' && S.devs[ui.di]) p = devPanel(ui.di);
   else { ui.tab = 'list'; p = listPanel(); }
   app.innerHTML = '<div class="wrap">' + tabsHTML() + p + '</div>';
+  fillThumbs();
   if (ui.focus){ const el = app.querySelector(`[data-id="${ui.focus}"]`) || document.getElementById(ui.focus); if (el && el.focus) el.focus(); ui.focus = null; }
 }
 const top0 = () => window.scrollTo(0, 0);
@@ -1053,8 +1173,12 @@ app.addEventListener('input', e => {
   save();
 });
 app.addEventListener('change', e => {
+  if (e.target.id === 'fEvid'){ const files = [...e.target.files]; const di = +e.target.dataset.d; e.target.value = ''; addFiles(di, files); return; }
   if (e.target.id === 'jump'){ ui.tab = 'dev'; ui.di = +e.target.value; ui.step = 1; render(); top0(); }
 });
+app.addEventListener('dragover', e => { const z = e.target.closest && e.target.closest('#drop'); if (z) z.classList.add('over'); });
+app.addEventListener('dragleave', e => { const z = e.target.closest && e.target.closest('#drop'); if (z) z.classList.remove('over'); });
+app.addEventListener('drop', e => { const z = e.target.closest && e.target.closest('#drop'); if (z) z.classList.remove('over'); });
 function openDev(i){ ui.tab = 'dev'; ui.di = i; ui.step = 1; render(); top0(); }
 app.addEventListener('click', async e => {
   const b = e.target.closest('[data-act]');
@@ -1071,7 +1195,7 @@ app.addEventListener('click', async e => {
       `<p style="margin:0 0 6px"><b>${esc(d.titulo.trim() || 'Sin título')}</b></p><p style="margin:0">Se borrarán su descripción, ${st.nC} causa(s), ${st.roots} causa(s) raíz y ${st.acc} acción(es). No se puede deshacer; si quieres conservarla, primero usa «Exportar».</p>`,
       'Eliminar desviación', true);
     if (!ok || S.devs[i] !== d) return;
-    S.devs.splice(i, 1); save();
+    S.devs.splice(i, 1); save(); FDB.del((d.evid || []).map(x => x.id)).catch(() => {});
     if (ui.tab === 'dev') ui.tab = 'list';
     render(); toast('Desviación eliminada');
   }
@@ -1096,10 +1220,23 @@ app.addEventListener('click', async e => {
   else if (a === 'csv') exportCsv();
   else if (a === 'ppt') generarPpt();
   else if (a === 'imp') document.getElementById('fImp').click();
+  else if (a === 'evopen'){
+    const d = S.devs[di], x = d && (d.evid || []).find(y => y.id === b.dataset.id); if (!x) return;
+    let blob; try { blob = await FDB.get(x.id); } catch(err) {}
+    if (!blob){ inform('Archivo no disponible', 'Este archivo no está guardado en este equipo. Pídele a quien lo adjuntó que te envíe su «Exportar» (.json) e impórtalo.'); return; }
+    let w = null;
+    if (WEB && (isImg(x) || /pdf/.test(x.type))) { try { w = window.open(await blobUrl(x.id), '_blank'); } catch(err) {} }
+    if (!w) dl(x.name, x.type, blob);
+  }
+  else if (a === 'evdel'){
+    const d = S.devs[di], x = d && (d.evid || []).find(y => y.id === b.dataset.id); if (!x) return;
+    if (!(await ask('¿Quitar este archivo?', `<b>${esc(x.name)}</b><br>Se borrará de la evidencia de esta desviación.`, 'Quitar archivo', true))) return;
+    d.evid = d.evid.filter(y => y.id !== x.id); FDB.del([x.id]).catch(() => {}); save(); render(); toast('Archivo quitado');
+  }
 });
 
 /* ---------- vista completa / informe ---------- */
-function buildPrint(){
+function buildPrint(urls = {}){
   const m = S.meta;
   const head = `<div class="phead"><img src="${LOGO}" alt="MIRS"><div class="pt"><h1>Análisis de Desviaciones</h1><small>Ishikawa · 5 porqués (RCA) · Plan de acción</small></div><div class="pr">${esc(m.area)}${m.fecha ? '<br>' + fdate(m.fecha) : ''}</div></div>`;
   const ttl = (d, di) => esc(devTitle(d, di));
@@ -1116,6 +1253,10 @@ function buildPrint(){
     <div class="desliza"><table class="lista"><tr><td class="k">Ámbito</td><td>${esc(d.ambito)}</td><td class="k">Dónde y cuándo</td><td>${esc(d.donde)}</td></tr>
     <tr><td class="k">Qué ocurrió</td><td colspan="3">${esc(d.que)}</td></tr><tr><td class="k">Impacto</td><td>${esc(d.impacto)}</td><td class="k">Evidencia</td><td>${esc(d.evidencia)}</td></tr></table></div>
     <h3>Diagrama de Ishikawa</h3><div class="fishp">${fish(d, 'p' + di)}</div></section>`;
+    const ev = d.evid || [], pics = ev.filter(x => urls[x.id]), others = ev.filter(x => !urls[x.id]);
+    if (ev.length) h += `<section class="pg"><h2>${ttl(d, di)}</h2><h3>Evidencia adjunta</h3>
+      ${pics.length ? `<div class="pevid">${pics.map(x => `<figure><img src="${urls[x.id]}" alt="${esc(x.name)}"><figcaption>${esc(x.name)}</figcaption></figure>`).join('')}</div>` : ''}
+      ${others.length ? `<p class="small"><b>Otros archivos:</b> ${others.map(x => esc(x.name)).join(' · ')}</p>` : ''}</section>`;
     h += `<section class="pg"><h2>${ttl(d, di)}</h2><h3>Análisis RCA: 5 porqués</h3>`;
     h += L.length ? `<div class="desliza"><table class="lista"><thead><tr><th>Categoría</th><th>Causa inmediata</th><th>¿Por qué? 1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>Causa raíz</th></tr></thead><tbody>
       ${L.map(c => { const w = d.whys[c.id] || {w:['','','','',''], root:''}; return `<tr><td>${esc(catName(c.k))}</td><td>${esc(c.t)}</td>${[0,1,2,3,4].map(i => `<td>${esc(w.w[i] || '')}</td>`).join('')}<td><b>${esc(w.root)}</b></td></tr>`; }).join('')}</tbody></table></div>` : '<p>—</p>';
@@ -1128,14 +1269,15 @@ function buildPrint(){
   document.getElementById('print').innerHTML = h;
   return h;
 }
-function openVista(){ buildPrint(); const v = document.getElementById('vista'); v.hidden = false; v.scrollTop = 0; document.body.classList.add('noscroll'); document.getElementById('bCerrarVista').focus(); }
+async function openVista(){ buildPrint(await evidUrls(false)); const v = document.getElementById('vista'); v.hidden = false; v.scrollTop = 0; document.body.classList.add('noscroll'); document.getElementById('bCerrarVista').focus(); }
 function closeVista(){ document.getElementById('vista').hidden = true; document.body.classList.remove('noscroll'); }
 document.getElementById('bCerrarVista').onclick = closeVista;
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('vista').hidden && document.getElementById('modal').hidden) closeVista(); });
 document.getElementById('bInforme').onclick = () => descargarInforme();
-function exportPdf(){
+async function exportPdf(){
   if (!S.devs.length){ inform('Sin desviaciones', 'Crea al menos una desviación antes de exportar el PDF.'); return; }
-  buildPrint();
+  buildPrint(await evidUrls(false));
+  await imgsLoaded(document.getElementById('print'));
   toast('En la ventana de impresión elige «Guardar como PDF» (orientación horizontal).');
   setTimeout(() => window.print(), 300);
 }
@@ -1143,9 +1285,9 @@ if (WEB){
   ['bPdf','bPdf2'].forEach(id => { const b = document.getElementById(id); b.hidden = false; b.onclick = exportPdf; });
   document.getElementById('bInforme').hidden = true;
 }
-function descargarInforme(){
+async function descargarInforme(){
   if (!S.devs.length){ inform('Sin desviaciones', 'Crea al menos una desviación antes de descargar el informe.'); return; }
-  const body = buildPrint();
+  const body = buildPrint(await evidUrls(true));
   const css = document.getElementById('css').textContent;
   const html = `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MIRS · Análisis de Desviaciones</title><style>${css}</style></head><body class="solo"><div class="solo-nota">Para guardarlo como PDF: Ctrl+P (o Archivo → Imprimir) → «Guardar como PDF», orientación horizontal.</div><div id="print">${body}</div></body></html>`;
   dl('MIRS-Analisis-de-Desviaciones.html', 'text/html', html);
@@ -1238,7 +1380,17 @@ function exportCsv(){
   if (rows.length === 1){ inform('Sin datos', 'Aún no hay causas ni acciones para exportar.'); return; }
   dl('MIRS-plan-de-accion.csv', 'text/csv;charset=utf-8', '﻿' + rows.map(r => r.map(q).join(';')).join('\r\n'));
 }
-document.getElementById('bExp').onclick = () => dl('MIRS-desviaciones-avance.json', 'application/json', JSON.stringify(S, null, 2));
+document.getElementById('bExp').onclick = async () => {
+  const adj = {}; let falt = 0;
+  for (const d of S.devs) for (const x of (d.evid || [])) { try { const b = await FDB.get(x.id); if (b) adj[x.id] = await toDataUrl(b); else falt++; } catch(e) { falt++; } }
+  const n = Object.keys(adj).length;
+  await dl('MIRS-desviaciones-avance.json', 'application/json', JSON.stringify(Object.assign({}, S, {adjuntos:adj}), null, n ? 0 : 2));
+  if (falt) toast(falt + ' archivo(s) no estaban en este equipo y no se incluyeron');
+};
+async function importBlobs(o, devs){
+  const adj = (o && o.adjuntos && typeof o.adjuntos === 'object') ? o.adjuntos : {};
+  for (const d of devs) for (const x of (d.evid || [])) if (typeof adj[x.id] === 'string') { try { const b = fromDataUrl(adj[x.id]); if (b) await FDB.put(x.id, b); } catch(e) { console.error(e); } }
+}
 document.getElementById('bImp').onclick = () => document.getElementById('fImp').click();
 document.getElementById('fImp').onchange = e => {
   const f = e.target.files[0]; if (!f) return;
@@ -1261,7 +1413,8 @@ document.getElementById('fImp').onchange = e => {
       for (const k in S.meta) if (!S.meta[k] && inc.meta[k]) S.meta[k] = inc.meta[k];
       if (inc.conclusiones && !S.conclusiones.includes(inc.conclusiones)) S.conclusiones = (S.conclusiones ? S.conclusiones + '\n' : '') + inc.conclusiones;
       toast(inc.devs.length + ' desviación(es) agregada(s)');
-    } else { S = inc; toast('Avance importado'); }
+    } else { const old = []; S.devs.forEach(d => (d.evid || []).forEach(x => old.push(x.id))); FDB.del(old).catch(() => {}); S = inc; toast('Avance importado'); }
+    await importBlobs(o, inc.devs);
     ui = {tab:'list', di:0, step:1, focus:null, q:''}; save(); render(); top0();
   };
   r.readAsText(f); e.target.value = '';
@@ -1269,7 +1422,7 @@ document.getElementById('fImp').onchange = e => {
 document.getElementById('bPrint').onclick = openVista;
 document.getElementById('bReset').onclick = async () => {
   if (!(await ask('¿Borrar todo?', `Se borrarán los datos generales, las <b>${S.devs.length}</b> desviación(es) y las conclusiones. No se puede deshacer; si quieres conservarlo, primero usa «Exportar».`, 'Borrar todo', true))) return;
-  S = defaults(); ui = {tab:'list', di:0, step:1, focus:null, q:''}; save(); render(); toast('Se borró todo');
+  S = defaults(); FDB.clear().catch(() => {}); ui = {tab:'list', di:0, step:1, focus:null, q:''}; save(); render(); toast('Se borró todo');
 };
 
 render();
