@@ -683,12 +683,12 @@ let timer = null, writing = false, again = false;
 function stat(t){ document.getElementById('saved').textContent = t; }
 function storeMsg(){
   return DB ? 'Tu avance se guarda solo en tu cuenta: lo ves en el PC y en el celular. Solo tú ves tus datos.'
-            : 'Tu avance se guarda solo en este navegador (cada compañero tiene el suyo). Para juntar el trabajo, cada uno usa «Exportar» y quien consolida usa «Importar» → «Agregar a las mías».';
+            : 'Se guarda en tu propio navegador.';
 }
 function save(){
   try { localStorage.setItem(LKEY, JSON.stringify(S)); } catch(e) {}
   if (DB) { clearTimeout(timer); timer = setTimeout(flush, 700); stat('Guardando…'); }
-  else stat('Guardado en este navegador · ' + hhmm());
+  else stat('Se guarda en tu propio navegador · ' + hhmm());
 }
 function docsFromState(){
   const docs = {main:{v:2, meta:S.meta, conclusiones:S.conclusiones, order:S.devs.map(d => d.id)}};
@@ -975,7 +975,7 @@ function metaPanel(){
       <li><b>Plan de acción:</b> cada causa raíz aparece sola para que le asignes acciones, responsable, fecha y estado.</li>
       <li><b>Resumen:</b> junta todas las desviaciones. Desde ahí generas la PPT MIRS, el informe para PDF o la tabla CSV para Excel.</li>
     </ol>
-    <p class="nota">${esc(storeMsg())} Si traes avance del formato anterior, usa «Importar» con el archivo .json que exportaste allí.</p>
+    <p class="nota">${esc(storeMsg())}</p>
   </div>
   <div class="nav"><span></span><button class="btn pri" data-act="tab" data-t="list">Ir a las desviaciones →</button></div>
   </section>`;
@@ -1055,8 +1055,7 @@ function evidBlock(di){
       ${isImg(x) ? `<div class="eth" data-thumb="${x.id}"></div>` : `<div class="eth ico">${esc(extOf(x.name))}</div>`}
       <div class="einfo"><span class="ename" title="${esc(x.name)}">${esc(x.name)}</span><small>${fsize(x.size)}${x.added ? ' · ' + fdate(x.added) : ''}</small></div>
       <div class="ebtn"><button class="btn sm" data-act="evopen" data-d="${di}" data-id="${x.id}">${isImg(x) || /pdf/.test(x.type) ? 'Ver' : 'Descargar'}</button>
-        <button class="x" title="Quitar archivo" aria-label="Quitar archivo" data-act="evdel" data-d="${di}" data-id="${x.id}">✕</button></div></div>`).join('')}</div>` : ''}
-    <p class="nota" style="margin:0">Los archivos se guardan en este equipo. Para enviarlos a un compañero, «Exportar» los incluye en el archivo .json.</p></div>`;
+        <button class="x" title="Quitar archivo" aria-label="Quitar archivo" data-act="evdel" data-d="${di}" data-id="${x.id}">✕</button></div></div>`).join('')}</div>` : ''}</div>`;
 }
 
 function step2(di){
@@ -1123,7 +1122,7 @@ function resPanel(){
     : `<div class="tarjeta"><p class="muted" style="margin:0">Aún no hay desviaciones. <button class="btn sm" data-act="newdev">＋ Nueva desviación</button></p></div>`}
   <div class="tarjeta">${secH('✓', 'Conclusiones', 'Qué patrón común aparece entre las causas raíz y qué acción tendría más impacto. Cada línea es una conclusión en la PPT (máx. 4).')}
     <label class="campo"><textarea id="f-conclusiones" data-f="conclusiones" rows="4">${esc(S.conclusiones)}</textarea></label></div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn pri" data-act="print">Vista completa</button>${WEB ? '<button class="btn pri" data-act="pdf">Exportar PDF</button>' : '<button class="btn" data-act="informe">Descargar informe (HTML para PDF)</button>'}<button class="btn" data-act="csv">Descargar tabla (CSV para Excel)</button></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn pri" data-act="print">Vista completa</button>${WEB ? '<button class="btn pri" data-act="pdf">Exportar PDF</button>' : '<button class="btn" data-act="informe">Descargar informe (HTML para PDF)</button>'}<button class="btn" data-act="csv">Descargar tabla (Excel)</button></div>
   </section>`;
 }
 
