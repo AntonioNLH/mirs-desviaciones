@@ -192,6 +192,28 @@ textarea{resize:vertical;line-height:1.45}
 .resdev h3,.pm h3{margin-top:0}
 .pm{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px;align-items:start}
 
+/* Guías de cada paso */
+.guia{background:#FFF8E6;border:1px solid #F0D48A;border-left:5px solid var(--FondoBarra);border-radius:10px;margin-bottom:14px;padding:0 16px}
+.guia summary{cursor:pointer;font-weight:700;padding:11px 0;list-style:none;display:flex;align-items:center;gap:8px;color:var(--Negro)}
+.guia summary::-webkit-details-marker{display:none}
+.guia summary::before{content:"?";width:20px;height:20px;border-radius:50%;background:var(--FondoBarra);color:#fff;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.guia summary::after{content:"Ocultar";margin-left:auto;font-size:11.5px;font-weight:600;color:var(--gris)}
+.guia:not([open]) summary::after{content:"Ver guía"}
+.guia summary:focus-visible{outline:3px solid rgba(0,0,0,.35);outline-offset:2px;border-radius:6px}
+.gbody{padding:0 0 12px;font-size:13px;line-height:1.55;max-width:900px}
+.gbody p{margin:0 0 8px}.gbody ul{margin:0 0 4px;padding-left:20px}.gbody li{margin-bottom:4px}
+table.escala{border-collapse:collapse;width:100%;margin:4px 0 10px;font-size:12.5px;background:#fff;border-radius:8px;overflow:hidden}
+table.escala th{background:var(--amarillo);padding:6px 10px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+table.escala td{padding:7px 10px;border-top:1px solid #EFE4C4;vertical-align:top}
+table.escala small{color:var(--gris);font-weight:400}
+.hint{font-size:11.5px;color:var(--gris);line-height:1.35}
+
+/* Opción de informe */
+.tarjeta.opc{padding:14px 18px}
+.chk-opc{display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:13.5px}
+.chk-opc input{width:20px;height:20px;margin-top:1px;accent-color:var(--FondoBarra);flex:0 0 auto;cursor:pointer}
+.chk-opc small{display:block;color:var(--gris);font-size:12px;margin-top:2px}
+
 /* Avisos */
 .banner{display:flex;gap:12px;align-items:center;background:#FFF8E6;border:1px solid #F0D48A;border-left:5px solid var(--FondoBarra);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;font-weight:600}
 .banner.falta{background:#FBEDED;border-color:#E4B4B4;border-left-color:var(--Rojo);color:#8A2E2E}
@@ -316,7 +338,7 @@ body.solo::before{display:none}
 <header class="barra">
   <span class="menu-link"><img id="logo" alt="MIRS"></span>
   <h1>Análisis de Desviaciones
-    <small>Ishikawa · 5 porqués (RCA) · Plan de acción</small>
+    <small>Ishikawa · 5 porqués (RCA) · Matriz de priorización · Plan de acción</small>
   </h1>
   <div class="acciones-barra">
     <button class="btn" id="bImp">Importar</button>
@@ -500,11 +522,23 @@ function buildSlides(D) {
   // 1) Resumen con tarjetas y barra de estado
   mk(idc => {
     let s = head(idc, 'Resumen del análisis', 'Resumen');
-    const stats = [[nC, 'Causas inmediatas identificadas con Ishikawa', DARK], [nR, 'Causas raíz encontradas con 5 porqués', DARK], [nA, 'Acciones en el plan (' + (est['Cerrada'] || 0) + ' cerradas)', 'F07F00']];
+    const stats = [[nC, 'Causas inmediatas identificadas con Ishikawa', DARK], [nR, 'Causas raíz encontradas con 5 porqués', DARK], [nA, D.verEstado ? 'Acciones en el plan (' + (est['Cerrada'] || 0) + ' cerradas)' : 'Acciones en el plan', 'F07F00']];
     stats.forEach((st, i) => {
       s += card(idc, 0.5 + i * 3.1, 1.2, 2.8, 1.7,
         para(String(st[0]), {sz: 40, b: 1, c: st[2]}) + para(st[1], {sz: 13, c: GRAY, sb: 4}), {name: 'Indicador ' + (i + 1), anchor: 'ctr'});
     });
+    if (!D.verEstado) {
+      const pc = {'I': 0, 'II': 0, 'III': 0}; let tot = 0;
+      devs.forEach(d => (d.mx || []).forEach(m => { if (m.p) { pc[m.p]++; tot++; } }));
+      s += shape(idc(), 'Título barra', 0.5, 3.2, 9, 0.35, para('Prioridad de las acciones', {sz: 15, b: 1, c: '1A1A1A'}), {ins: 0});
+      if (tot) {
+        let x = 0.5;
+        [['I', 'FF4B4B'], ['II', 'F8D3D5'], ['III', 'D9D9D9']].forEach(p => { const w = 9 * pc[p[0]] / tot; if (w > 0) { s += shape(idc(), 'Barra ' + p[0], x, 3.65, w, 0.4, null, {fill: p[1], box: false, shadow: true}); x += w; } });
+        [['I', 'D93A3A'], ['II', 'B05B5B'], ['III', '7F7F7F']].forEach((p, i) => { const n = pc[p[0]];
+          s += shape(idc(), 'Leyenda ' + p[0], 0.5 + i * 3.1, 4.2, 2.9, 0.4, `<a:p><a:pPr algn="l"/>${run('Prioridad ' + p[0] + '  ', {sz: 14, b: 1, c: p[1]})}${run(n + ' · ' + Math.round(100 * n / tot) + '%', {sz: 14, c: '1A1A1A'})}</a:p>`, {ins: 0}); });
+      } else s += shape(idc(), 'Sin prioridad', 0.5, 3.7, 9, 0.4, para('Aún no hay acciones calificadas en la matriz de priorización.', {sz: 14, c: GRAY}), {ins: 0});
+      return s;
+    }
     s += shape(idc(), 'Título barra', 0.5, 3.2, 9, 0.35, para('Estado de las acciones del plan', {sz: 15, b: 1, c: '1A1A1A'}), {ins: 0});
     const parts = [['Cerrada', '1A1A1A', '1A1A1A'], ['En curso', 'F07F00', 'F07F00'], ['Pendiente', GREY_BAR, '7F7F7F']];
     if (nA > 0) {
@@ -613,16 +647,17 @@ function buildSlides(D) {
     }
     // 6) Plan de acción
     {
-      const cw = [1.9, 2.5, 1.2, 0.85, 1.65, 0.9], sz = 10;
+      const cw = D.verEstado ? [1.9, 2.5, 1.2, 0.85, 1.65, 0.9] : [2.1, 2.8, 1.3, 0.9, 1.9], sz = 10;
       const flat = [];
       d.causes.forEach(c => { if (!c.root) return; (c.acc.length ? c.acc : [null]).forEach((a, i) => flat.push({c, a, first: i === 0})); });
-      const hs = flat.map(r => estRow([r.first ? r.c.root : '', r.a ? r.a.a : '—', r.a ? r.a.r : '', r.a ? r.a.f : '', r.a ? r.a.i : '', r.a ? r.a.e : ''], cw, sz));
+      const hs = flat.map(r => estRow([r.first ? r.c.root : '', r.a ? r.a.a : '—', r.a ? r.a.r : '', r.a ? r.a.f : '', r.a ? r.a.i : '', r.a ? r.a.e : ''].slice(0, cw.length), cw, sz));
       const pages = chunkRows(flat, hs, 3.5);
       pages.forEach((pg, pi) => mk(idc => {
         const rows = [hdr(['Causa raíz', 'Acción', 'Responsable', 'Fecha', 'Indicador de cierre', 'Estado'], 11)].concat(pg.map((r, i) => ({h: 0.45, cells: [
           {t: r.first ? r.c.root : '', sz, b: 1, c: ROOT, anchor: 't', fill: zebra(i)}, {t: r.a ? r.a.a : '—', sz, anchor: 't', fill: zebra(i)},
           {t: r.a ? r.a.r : '', sz, anchor: 't', fill: zebra(i)}, {t: r.a ? r.a.f : '', sz, anchor: 't', fill: zebra(i)}, {t: r.a ? r.a.i : '', sz, anchor: 't', fill: zebra(i)},
           {t: r.a ? r.a.e : '', sz, b: 1, al: 'ctr', anchor: 't', fill: r.a ? (ESTADO_FILL[r.a.e] || LIGHT) : zebra(i)}]})));
+        if (!D.verEstado) rows.forEach(r => r.cells.pop());
         const title = 'Plan de acción' + (pages.length > 1 ? ` (${pi + 1}/${pages.length})` : '');
         return head(idc, title, devTag(d)) + sub(idc, d) + table(idc(), 'Plan de acción', 0.5, 1.12, cw, rows);
       }));
@@ -653,7 +688,7 @@ async function buildPptx(D, tplB64, JSZip) {
   // portada
   let s1 = await zip.file('ppt/slides/slide1.xml').async('string');
   const m = D.meta || {};
-  const title = '<a:p><a:r><a:rPr lang="es-CL" dirty="0"/><a:t>Análisis de desviaciones</a:t></a:r></a:p><a:p><a:r><a:rPr lang="es-CL" sz="1400" b="0" dirty="0"><a:solidFill><a:srgbClr val="595959"/></a:solidFill></a:rPr><a:t>Ishikawa · 5 porqués · Plan de acción</a:t></a:r></a:p>';
+  const title = '<a:p><a:r><a:rPr lang="es-CL" dirty="0"/><a:t>Análisis de desviaciones</a:t></a:r></a:p><a:p><a:r><a:rPr lang="es-CL" sz="1400" b="0" dirty="0"><a:solidFill><a:srgbClr val="595959"/></a:solidFill></a:rPr><a:t>Ishikawa · 5 porqués · Matriz de priorización · Plan de acción</a:t></a:r></a:p>';
   s1 = s1.replace('<a:p><a:endParaRPr lang="es-CL"/></a:p>', title);
   const info = [['Área', m.area], ['Integrantes', m.nombre], ['Responsable', m.resp], ['Fecha', m.fecha]].filter(x => x[1]);
   const infoXml = shape(10, 'Datos generales', 0.29, 3.05, 3.0, 1.4,
@@ -718,7 +753,8 @@ const hhmm = () => new Date().toLocaleTimeString('es-CL', {hour:'2-digit', minut
 
 const emptyCauses = () => Object.fromEntries(CATS.map(c => [c.k, [{id:uid(), t:''}]]));
 const newDev = () => ({id:uid(), creada:today(), titulo:'', ambito:'', que:'', donde:'', impacto:'', evidencia:'', evid:[], causas:emptyCauses(), whys:{}, acciones:{}});
-const defaults = () => ({meta:{nombre:'', area:'', resp:'', fecha:''}, devs:[], conclusiones:''});
+const defaults = () => ({meta:{nombre:'', area:'', resp:'', fecha:'', verEstado:''}, devs:[], conclusiones:''});
+const verE = () => S.meta.verEstado === '1';
 const devHasContent = x => !!x && ((Array.isArray(x.evid) && x.evid.length > 0) || TEXT_KEYS.some(k => k !== 'ambito' && String(x[k] || '').trim()) ||
   (x.causas && typeof x.causas === 'object' && Object.values(x.causas).some(a => Array.isArray(a) && a.some(y => y && String(y.t || '').trim()))));
 
@@ -1037,7 +1073,7 @@ function fld(label, path, o = {}){
   if (o.ta) inp = `<textarea id="${id}" data-f="${path}" rows="${o.rows || 3}" placeholder="${esc(o.ph || '')}">${esc(v)}</textarea>`;
   else if (o.sel) inp = `<select id="${id}" data-f="${path}"${o.est ? ` class="est est-${slug(v || 'Pendiente')}"` : ''}>${o.est ? '' : '<option value="">Selecciona…</option>'}${o.sel.map(x => `<option${x === v ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select>`;
   else inp = `<input id="${id}" type="${o.type || 'text'}" data-f="${path}" value="${esc(v)}" placeholder="${esc(o.ph || '')}">`;
-  return `<label class="campo ${o.cls || ''}"><span>${label}</span>${inp}</label>`;
+  return `<label class="campo ${o.cls || ''}"><span>${label}</span>${inp}${o.hint ? `<small class="hint">${o.hint}</small>` : ''}</label>`;
 }
 const secH = (n, t, sm) => `<div class="sec-h"><span class="n">${n}</span><h2><span class="tt">${t}</span>${sm ? `<small>${sm}</small>` : ''}</h2></div>`;
 
@@ -1045,10 +1081,10 @@ function metaPanel(){
   return `<section class="vista">
   <div class="tarjeta">${secH(1, 'Datos generales', 'Se completan una sola vez y aparecen en la portada del informe y de la PPT')}
     <div class="rejilla">
-      ${fld('Integrantes / nombre','meta.nombre')}
-      ${fld('Área analizada','meta.area',{sel:['Faena','Laboratorio','Faena y laboratorio']})}
-      ${fld('Responsable del área','meta.resp')}
-      ${fld('Fecha del análisis','meta.fecha',{type:'date'})}
+      ${fld('Integrantes / nombre','meta.nombre',{hint:'Personas que participan del análisis.'})}
+      ${fld('Área analizada','meta.area',{sel:['Faena','Laboratorio','Faena y laboratorio'], hint:'Área a la que pertenecen las desviaciones.'})}
+      ${fld('Responsable del área','meta.resp',{hint:'Jefatura dueña del proceso analizado.'})}
+      ${fld('Fecha del análisis','meta.fecha',{type:'date', hint:'Día en que se realiza el análisis.'})}
     </div>
   </div>
   <div class="tarjeta">${secH(2, 'Cómo usar la app')}
@@ -1121,15 +1157,50 @@ function devPanel(di){
     <div class="tarjeta">${secH(di + 1, esc(devTitle(d, di)))}<div class="steps">${pills}</div>${body}<div class="nav">${prev}${next}</div></div></section>`;
 }
 
+const GUIAS = {
+  meta: `<p>Estos datos identifican el análisis y aparecen en la portada del PDF y de la PowerPoint. Se completan una sola vez.</p>`,
+  s1: `<p>Describe <b>qué pasó</b> con hechos y datos, comparando lo que exige el estándar con lo que realmente ocurrió. Evita opiniones y no busques culpables.</p>
+    <ul><li><b>Título:</b> frase corta que identifique el problema. Ej.: «Muestra de control fuera de rango en análisis de humedad».</li>
+    <li><b>Dónde y cuándo:</b> lugar, equipo, turno y fecha en que se detectó.</li>
+    <li><b>Qué ocurrió:</b> estándar esperado frente a la situación real. Ej.: «El estándar exige ±0,2 %; el resultado fue 0,6 %».</li>
+    <li><b>Impacto:</b> consecuencias en seguridad, calidad, producción, costo o ambiente, con cifras si las hay.</li>
+    <li><b>Evidencia:</b> registros, fotos o informes que respaldan lo descrito. Adjunta los archivos abajo.</li></ul>`,
+  s2: `<p>Las <b>causas inmediatas</b> son lo que provocó directamente la desviación: lo primero que aparece al investigar. Anota cada una en la categoría que corresponda.</p>
+    <ul><li>Escribe <b>una causa por casilla</b>, en frase corta. Ej.: «Balanza con calibración vencida».</li>
+    <li>Usa las 6 categorías como lista de chequeo: revísalas todas y deja vacías las que no aplican.</li>
+    <li>Todavía no busques el origen profundo: eso se hace en el paso 3 con los 5 porqués.</li></ul>`,
+  s3: `<p>Para cada causa inmediata pregunta <b>«¿por qué ocurrió?»</b> y responde con un hecho. Luego pregunta por qué ocurrió esa respuesta, y así sucesivamente.</p>
+    <ul><li>Ej.: Balanza con calibración vencida → ¿por qué? El aviso de vencimiento llega a un correo que nadie revisa → ¿por qué? No hay responsable del plan de calibraciones.</li>
+    <li><b>Detente</b> cuando llegues a algo que la organización puede corregir y que, al corregirlo, evita que se repita. Pueden ser menos de 5 porqués; deja vacíos los que sobran.</li>
+    <li>Si la respuesta es «error humano» o «falta de cuidado», sigue preguntando: ¿qué permitió que ese error ocurriera?</li>
+    <li>La <b>causa raíz</b> se completa sola con tu último porqué; puedes editarla para redactarla mejor.</li></ul>`,
+  s4: `<p>Para cada causa raíz propón una o más <b>soluciones</b> y califica cada una con dos preguntas. La combinación la ubica en una casilla de la matriz, y el color de la casilla es su prioridad.</p>
+    <div class="desliza"><table class="escala"><thead><tr><th></th><th>Alto</th><th>Medio</th><th>Bajo</th></tr></thead><tbody>
+    <tr><td><b>Impacto</b><br><small>¿Cuánto ayuda a eliminar la causa raíz?</small></td><td>La elimina o casi</td><td>La reduce bastante</td><td>Ayuda poco</td></tr>
+    <tr><td><b>Esfuerzo</b><br><small>¿Cuánto cuesta hacerla (tiempo, dinero, personas)?</small></td><td>Proyecto con inversión o meses de trabajo</td><td>Requiere coordinar o algo de presupuesto</td><td>Rápida y con los recursos actuales</td></tr></tbody></table></div>
+    <p><b>Ejemplo:</b> «Nombrar responsable del plan de calibraciones» ataca directo la causa (impacto <b>Alto</b>) y es una designación por escrito (esfuerzo <b>Bajo</b>) → <span class="prio pI">Prioridad I</span></p>
+    <p><span class="prio pI">Prioridad I</span> se hace primero · <span class="prio pII">Prioridad II</span> se planifica a continuación · <span class="prio pIII">Prioridad III</span> se deja para después o se reconsidera.</p>`,
+  s5: `<p>Las soluciones aparecen <b>ordenadas por prioridad</b>. A cada una asígnale quién la hace, para cuándo y cómo se comprueba que se cumplió.</p>
+    <ul><li><b>Responsable:</b> un solo cargo o persona que responde por la acción.</li>
+    <li><b>Fecha compromiso:</b> realista. Las de Prioridad I deberían tener las fechas más cercanas.</li>
+    <li><b>Indicador de cierre:</b> una evidencia que se pueda verificar. Ej.: «Programa actualizado y firmado», no «capacitar mejor».</li>
+    <li><b>Estado:</b> Pendiente (no ha comenzado), En curso (se está haciendo) o Cerrada (terminada y con su evidencia).</li></ul>`,
+  res: `<p>Aquí se junta el análisis completo. Revisa que cada desviación tenga sus causas raíz, soluciones calificadas y plan; luego escribe las conclusiones y descarga el PDF, la PowerPoint o el Excel.</p>
+    <ul><li><b>Conclusiones:</b> qué patrón común aparece entre las causas raíz (por ejemplo, falta de responsables o de procedimientos) y qué acción tendría más impacto. Escribe una idea por línea.</li></ul>`
+};
+function guia(k){
+  let closed = false; try { closed = localStorage.getItem('mirs-guia-' + k) === '0'; } catch(e) {}
+  return `<details class="guia" data-guia="${k}"${closed ? '' : ' open'}><summary>¿Cómo completar este paso?</summary><div class="gbody">${GUIAS[k]}</div></details>`;
+}
 function step1(di){
   const p = `devs.${di}.`;
-  return `<div class="rejilla">
-    ${fld('Título de la desviación', p + 'titulo', {cls:'full', ph:'Ej.: resultado fuera de tolerancia, derrame, falla de equipo…'})}
-    ${fld('Ámbito', p + 'ambito', {sel:['Faena','Laboratorio']})}
-    ${fld('Dónde y cuándo se detectó', p + 'donde')}
-    ${fld('Qué ocurrió (estándar esperado vs. situación real)', p + 'que', {ta:1, rows:4, cls:'full'})}
-    ${fld('Impacto (seguridad, calidad, producción, costo, ambiente)', p + 'impacto', {ta:1})}
-    ${fld('Evidencia (registro, dato, foto, informe)', p + 'evidencia', {ta:1, ph:'Describe la evidencia y adjunta los archivos abajo'})}
+  return guia('s1') + `<div class="rejilla">
+    ${fld('Título de la desviación', p + 'titulo', {cls:'full', ph:'Ej.: resultado fuera de tolerancia, derrame, falla de equipo…', hint:'Frase corta que identifique el problema. Aparece en la lista, el diagrama y los informes.'})}
+    ${fld('Ámbito', p + 'ambito', {sel:['Faena','Laboratorio'], hint:'Dónde ocurrió: en faena o en laboratorio.'})}
+    ${fld('Dónde y cuándo se detectó', p + 'donde', {ph:'Ej.: Sala de balanzas, turno A, 14/10/2026', hint:'Lugar, equipo, turno y fecha.'})}
+    ${fld('Qué ocurrió (estándar esperado vs. situación real)', p + 'que', {ta:1, rows:4, cls:'full', ph:'Ej.: El estándar exige ±0,2 %; el resultado fue 0,6 % y se informaron 12 resultados antes de detectarlo.', hint:'Compara lo que exige el estándar con lo que pasó realmente, con datos. Sin opiniones ni culpables.'})}
+    ${fld('Impacto (seguridad, calidad, producción, costo, ambiente)', p + 'impacto', {ta:1, ph:'Ej.: Calidad: 12 resultados reprocesados y 6 h de retraso.', hint:'Qué consecuencias tuvo o pudo tener, con cifras si las hay.'})}
+    ${fld('Evidencia (registro, dato, foto, informe)', p + 'evidencia', {ta:1, ph:'Describe la evidencia y adjunta los archivos abajo', hint:'Qué registros respaldan lo descrito.'})}
     ${evidBlock(di)}
   </div>`;
 }
@@ -1151,7 +1222,7 @@ function step2(di){
     ${d.causas[c.k].map((x, i) => `<div class="row"><input type="text" id="f-${x.id}" data-id="${x.id}" data-f="devs.${di}.causas.${c.k}.${i}.t" value="${esc(x.t)}" placeholder="Causa inmediata">
       <button class="x" title="Quitar" aria-label="Quitar causa" data-act="delcause" data-d="${di}" data-c="${c.k}" data-id="${x.id}">✕</button></div>`).join('')}
     <button class="btn sm" data-act="addcause" data-d="${di}" data-c="${c.k}">＋ Agregar causa</button></div>`).join('');
-  return `<div class="sub"><h3>Diagrama de Ishikawa (se dibuja solo)</h3>
+  return guia('s2') + `<div class="sub"><h3>Diagrama de Ishikawa (se dibuja solo)</h3>
     <p class="muted small" style="margin:0 0 8px">Escribe abajo las causas inmediatas en la categoría que corresponda. Las categorías sin causas se dejan vacías.</p>
     <div id="fishwrap">${fish(d, 'v')}</div></div>
     <div class="cats">${cards}</div>`;
@@ -1159,8 +1230,8 @@ function step2(di){
 
 function step3(di){
   const d = S.devs[di], L = causeList(d);
-  if (!L.length) return `<div class="banner">Primero escribe al menos una causa inmediata en el paso 2 (Ishikawa).</div>`;
-  return `<div class="banner">Cada causa inmediata del Ishikawa aparece aquí sola. Responde «¿por qué?» hasta llegar a la causa raíz. Si la encuentras antes del 5.º porqué, deja los demás vacíos. La causa raíz se completa sola con tu último porqué y puedes editarla.</div>` +
+  if (!L.length) return guia('s3') + `<div class="banner">Primero escribe al menos una causa inmediata en el paso 2 (Ishikawa).</div>`;
+  return guia('s3') +
   L.map(c => {
     const w = ensureWhy(d, c.id), b = `devs.${di}.whys.${c.id}.`;
     return `<div class="sub why"><div class="whyhead"><span class="tag">${esc(catName(c.k))}</span><strong>${esc(c.t)}</strong></div>
@@ -1172,12 +1243,12 @@ function step3(di){
 function step4(di){
   const d = S.devs[di], L = causeList(d);
   const withRoot = L.filter(c => { ensureWhy(d, c.id); return rootOf(d, c.id); });
-  if (!withRoot.length) return `<div class="banner">Aún no hay causas raíz. Completa los 5 porqués (paso 3) y aparecerán aquí solas.</div>`;
+  if (!withRoot.length) return guia('s4') + `<div class="banner">Aún no hay causas raíz. Completa los 5 porqués (paso 3) y aparecerán aquí solas.</div>`;
   const miss = L.length - withRoot.length;
   withRoot.forEach(c => ensureAcc(d, c.id));
   const nm = accNums(d);
   return (miss ? `<div class="banner falta">Faltan causas raíz en ${miss} causa(s) inmediata(s) (paso 3).</div>` : '') +
-  `<div class="banner">Propón una o más soluciones para cada causa raíz y califica su impacto y esfuerzo. La matriz las ubica solas; en el paso 5 les asignas responsable y fecha.</div>` +
+  guia('s4') +
   withRoot.map(c => {
     const w = d.whys[c.id], acs = d.acciones[c.id];
     return `<div class="sub"><div class="whyhead"><span class="tag raiz">Causa raíz</span><strong>${esc(w.root)}</strong>
@@ -1196,16 +1267,16 @@ function step4(di){
 
 function step5(di){
   const d = S.devs[di], L = accList(d);
-  if (!L.length) return `<div class="banner">Aún no hay soluciones. Defínelas en el paso 4 (Matriz de priorización) y aparecerán aquí ordenadas por prioridad.</div>`;
+  if (!L.length) return guia('s5') + `<div class="banner">Aún no hay soluciones. Defínelas en el paso 4 (Matriz de priorización) y aparecerán aquí ordenadas por prioridad.</div>`;
   const ord = {'I':0, 'II':1, 'III':2, '':3};
   const rows = L.slice().sort((x, y) => ord[prioOf(x.a)] - ord[prioOf(y.a)] || x.n - y.n);
   const sin = L.filter(x => !prioOf(x.a)).length;
   return (sin ? `<div class="banner falta">${sin} solución(es) sin calificar en la matriz (paso 4).</div>` : '') +
-    `<div class="banner">Las acciones aparecen ordenadas por prioridad. Asigna responsable, fecha compromiso, indicador de cierre y estado.</div>` +
+    guia('s5') +
     rows.map(x => { const i = d.acciones[x.c.id].indexOf(x.a), b = `devs.${di}.acciones.${x.c.id}.${i}.`; return `<div class="sub">
       <div class="plan-h"><span class="bub">${x.n}</span><div style="min-width:0;flex:1"><strong>${esc(x.a.a)}</strong>
         <div class="muted small" style="margin-top:2px">Causa raíz: ${esc(x.root)}</div></div>${prioPill(x.a)}</div>
-      <div class="acc5">${fld('Responsable', b + 'r')}${fld('Fecha compromiso', b + 'f', {type:'date'})}${fld('Indicador o evidencia de cierre', b + 'i')}${fld('Estado', b + 'e', {sel:ESTADOS, est:1})}</div></div>`; }).join('');
+      <div class="acc5">${fld('Responsable', b + 'r')}${fld('Fecha compromiso', b + 'f', {type:'date'})}${fld('Indicador o evidencia de cierre', b + 'i')}${fld('Estado', b + 'e', {sel:ESTADOS, est:1, hint: verE() ? '' : 'No aparece en los informes (opción en Resumen).'})}</div></div>`; }).join('');
 }
 
 function accList(d){
@@ -1238,22 +1309,24 @@ function updateMx(di){
 function planTable(d, forPrint){
   const rows = planRows(d), nm = accNums(d);
   if (!rows.length) return '<p class="muted">Sin causas inmediatas todavía.</p>';
-  return `<div class="desliza"><table class="lista"><thead><tr><th>Causa inmediata</th><th>Causa raíz</th><th>N°</th><th>Acción</th><th>Responsable</th><th>Fecha</th>${forPrint ? '<th>Indicador / evidencia</th>' : ''}<th>Prioridad</th><th>Estado</th></tr></thead><tbody>
+  return `<div class="desliza"><table class="lista"><thead><tr><th>Causa inmediata</th><th>Causa raíz</th><th>N°</th><th>Acción</th><th>Responsable</th><th>Fecha</th>${forPrint ? '<th>Indicador / evidencia</th>' : ''}<th>Prioridad</th>${verE() ? '<th>Estado</th>' : ''}</tr></thead><tbody>
   ${rows.map(r => `<tr>${r.first ? `<td rowspan="${r.span}">${esc(r.c.t)}<br><span class="muted small">${esc(catName(r.c.k))}</span></td><td rowspan="${r.span}">${esc(r.root) || '—'}</td>` : ''}
-    <td>${r.a && nm.get(r.a) ? `<span class="bub sm">${nm.get(r.a)}</span>` : ''}</td><td>${r.a ? esc(r.a.a) : '—'}</td><td>${r.a ? esc(r.a.r) : ''}</td><td>${r.a ? fdate(r.a.f) : ''}</td>${forPrint ? `<td>${r.a ? esc(r.a.i) : ''}</td>` : ''}<td>${r.a && nm.get(r.a) ? prioPill(r.a) : ''}</td><td>${r.a ? `<span class="est est-${slug(r.a.e)}">${esc(r.a.e)}</span>` : ''}</td></tr>`).join('')}</tbody></table></div>`;
+    <td>${r.a && nm.get(r.a) ? `<span class="bub sm">${nm.get(r.a)}</span>` : ''}</td><td>${r.a ? esc(r.a.a) : '—'}</td><td>${r.a ? esc(r.a.r) : ''}</td><td>${r.a ? fdate(r.a.f) : ''}</td>${forPrint ? `<td>${r.a ? esc(r.a.i) : ''}</td>` : ''}<td>${r.a && nm.get(r.a) ? prioPill(r.a) : ''}</td>${verE() ? `<td>${r.a ? `<span class="est est-${slug(r.a.e)}">${esc(r.a.e)}</span>` : ''}</td>` : ''}</tr>`).join('')}</tbody></table></div>`;
 }
 
 function resPanel(){
   let nC = 0, nR = 0, nA = 0, nDone = 0;
   S.devs.forEach(d => { const st = devStats(d); nC += st.nC; nR += st.roots; nA += st.acc; nDone += st.done; });
   return `<section class="vista">
+  ${guia('res')}
   ${pptCard()}
-  <div class="stats"><div class="stat o"><b>${S.devs.length}</b>desviaciones</div><div class="stat"><b>${nC}</b>causas inmediatas</div><div class="stat p"><b>${nR}</b>causas raíz</div><div class="stat v"><b>${nA}</b>acciones (${nDone} cerradas)</div></div>
+  <div class="stats"><div class="stat o"><b>${S.devs.length}</b>desviaciones</div><div class="stat"><b>${nC}</b>causas inmediatas</div><div class="stat p"><b>${nR}</b>causas raíz</div><div class="stat v"><b>${nA}</b>acciones${verE() ? ` (${nDone} cerradas)` : ''}</div></div>
   ${S.devs.length ? S.devs.map((d, i) => `<div class="tarjeta">${secH(i + 1, esc(devTitle(d, i)))}<div class="resdev"><div style="min-width:0">${planTable(d, false)}</div>${accList(d).length ? `<div><h3>Matriz de priorización</h3>${matrixHTML(d)}</div>` : ''}</div>
      <div style="margin-top:10px"><button class="btn sm" data-act="open" data-i="${i}">Abrir desviación</button></div></div>`).join('')
     : `<div class="tarjeta"><p class="muted" style="margin:0">Aún no hay desviaciones. <button class="btn sm" data-act="newdev">＋ Nueva desviación</button></p></div>`}
   <div class="tarjeta">${secH('✓', 'Conclusiones', 'Qué patrón común aparece entre las causas raíz y qué acción tendría más impacto. Cada línea es una conclusión en la PPT (máx. 4).')}
-    <label class="campo"><textarea id="f-conclusiones" data-f="conclusiones" rows="4">${esc(S.conclusiones)}</textarea></label></div>
+    <label class="campo"><textarea id="f-conclusiones" data-f="conclusiones" rows="4" placeholder="Ej.: La mayoría de las causas raíz son de gestión: faltan responsables definidos.">${esc(S.conclusiones)}</textarea></label></div>
+  <div class="tarjeta opc"><label class="chk-opc"><input type="checkbox" id="optEstado"${verE() ? ' checked' : ''}><span><b>Incluir el estado de las acciones</b> (Pendiente, En curso, Cerrada) en el PDF, la PowerPoint y el Excel<small>Si está desactivado, el estado se sigue guardando en el paso 5, pero no aparece en los informes.</small></span></label></div>
   <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn pri" data-act="print">Vista completa</button>${WEB ? '<button class="btn pri" data-act="pdf">Exportar PDF</button>' : '<button class="btn" data-act="informe">Descargar informe (HTML para PDF)</button>'}<button class="btn" data-act="csv">Descargar tabla (Excel)</button></div>
   </section>`;
 }
@@ -1305,12 +1378,14 @@ app.addEventListener('input', e => {
   save();
 });
 app.addEventListener('change', e => {
+  if (e.target.id === 'optEstado'){ S.meta.verEstado = e.target.checked ? '1' : ''; save(); render(); toast(e.target.checked ? 'El estado aparecerá en el PDF, la PPT y el Excel' : 'El estado no aparecerá en los informes'); return; }
   if (e.target.id === 'fEvid'){ const files = [...e.target.files]; const di = +e.target.dataset.d; e.target.value = ''; addFiles(di, files); return; }
   if (e.target.id === 'jump'){ ui.tab = 'dev'; ui.di = +e.target.value; ui.step = 1; render(); top0(); }
 });
 app.addEventListener('dragover', e => { const z = e.target.closest && e.target.closest('#drop'); if (z) z.classList.add('over'); });
 app.addEventListener('dragleave', e => { const z = e.target.closest && e.target.closest('#drop'); if (z) z.classList.remove('over'); });
 app.addEventListener('drop', e => { const z = e.target.closest && e.target.closest('#drop'); if (z) z.classList.remove('over'); });
+app.addEventListener('toggle', e => { const g = e.target; if (g.dataset && g.dataset.guia) { try { localStorage.setItem('mirs-guia-' + g.dataset.guia, g.open ? '1' : '0'); } catch(x) {} } }, true);
 function openDev(i){ ui.tab = 'dev'; ui.di = i; ui.step = 1; render(); top0(); }
 app.addEventListener('click', async e => {
   const b = e.target.closest('[data-act]');
@@ -1370,15 +1445,15 @@ app.addEventListener('click', async e => {
 /* ---------- vista completa / informe ---------- */
 function buildPrint(urls = {}){
   const m = S.meta;
-  const head = `<div class="phead"><img src="${LOGO}" alt="MIRS"><div class="pt"><h1>Análisis de Desviaciones</h1><small>Ishikawa · 5 porqués (RCA) · Plan de acción</small></div><div class="pr">${esc(m.area)}${m.fecha ? '<br>' + fdate(m.fecha) : ''}</div></div>`;
+  const head = `<div class="phead"><img src="${LOGO}" alt="MIRS"><div class="pt"><h1>Análisis de Desviaciones</h1><small>Ishikawa · 5 porqués (RCA) · Matriz de priorización · Plan de acción</small></div><div class="pr">${esc(m.area)}${m.fecha ? '<br>' + fdate(m.fecha) : ''}</div></div>`;
   const ttl = (d, di) => esc(devTitle(d, di));
   let h = `<table class="pw"><thead><tr><td>${head}</td></tr></thead><tbody><tr><td>`;
   h += `<section class="pg first"><h2>Datos generales</h2>
     <div class="desliza"><table class="lista"><tr><td class="k">Integrantes</td><td>${esc(m.nombre)}</td><td class="k">Área analizada</td><td>${esc(m.area)}</td></tr>
     <tr><td class="k">Responsable del área</td><td>${esc(m.resp)}</td><td class="k">Fecha del análisis</td><td>${fdate(m.fecha)}</td></tr></table></div>
     <h3>Contenido</h3>
-    <div class="desliza"><table class="lista"><thead><tr><th>N°</th><th>Desviación</th><th>Ámbito</th><th>Causas inmediatas</th><th>Causas raíz</th><th>Acciones</th><th>Estado</th></tr></thead><tbody>
-    ${S.devs.length ? S.devs.map((d, i) => { const st = devStats(d); return `<tr><td>${i + 1}</td><td>${esc(d.titulo) || '—'}</td><td>${esc(d.ambito)}</td><td>${st.nC}</td><td>${st.roots}</td><td>${st.acc}</td><td><span class="pill ${st.est[1]}">${st.est[0]}</span></td></tr>`; }).join('') : '<tr><td colspan="7">Sin desviaciones todavía.</td></tr>'}</tbody></table></div></section>`;
+    <div class="desliza"><table class="lista"><thead><tr><th>N°</th><th>Desviación</th><th>Ámbito</th><th>Causas inmediatas</th><th>Causas raíz</th><th>Acciones</th>${verE() ? '<th>Estado</th>' : ''}</tr></thead><tbody>
+    ${S.devs.length ? S.devs.map((d, i) => { const st = devStats(d); return `<tr><td>${i + 1}</td><td>${esc(d.titulo) || '—'}</td><td>${esc(d.ambito)}</td><td>${st.nC}</td><td>${st.roots}</td><td>${st.acc}</td>${verE() ? `<td><span class="pill ${st.est[1]}">${st.est[0]}</span></td>` : ''}</tr>`; }).join('') : '<tr><td colspan="7">Sin desviaciones todavía.</td></tr>'}</tbody></table></div></section>`;
   S.devs.forEach((d, di) => {
     const L = causeList(d);
     h += `<section class="pg"><h2>${ttl(d, di)}</h2>
@@ -1440,7 +1515,7 @@ function pptData(){
       mx:accList(d).map(x => ({n:x.n, a:x.a.a.trim(), root:x.root, imp:x.a.imp, esf:x.a.esf, p:prioOf(x.a)}))});
   });
   const m = S.meta;
-  return {meta:{nombre:m.nombre.trim(), area:m.area, resp:m.resp.trim(), fecha:fdate(m.fecha)}, devs, concl:S.conclusiones};
+  return {meta:{nombre:m.nombre.trim(), area:m.area, resp:m.resp.trim(), fecha:fdate(m.fecha)}, devs, concl:S.conclusiones, verEstado:verE()};
 }
 function readiness(){
   const w = []; let filled = 0;
@@ -1509,8 +1584,9 @@ async function dl(name, type, content){
 function exportCsv(){
   const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
   const head = ['Desviación','Título','Ámbito','Categoría','Causa inmediata','Causa raíz','N° acción','Acción','Responsable','Fecha','Indicador','Impacto','Esfuerzo','Prioridad','Estado'];
+  if (!verE()) head.pop();
   const rows = [head];
-  S.devs.forEach((d, i) => { const nm = accNums(d); planRows(d).forEach(r => rows.push([i + 1, d.titulo, d.ambito, catName(r.c.k), r.c.t, r.root, r.a ? (nm.get(r.a) || '') : '', r.a ? r.a.a : '', r.a ? r.a.r : '', r.a ? fdate(r.a.f) : '', r.a ? r.a.i : '', r.a ? r.a.imp : '', r.a ? r.a.esf : '', r.a && prioOf(r.a) ? 'Prioridad ' + prioOf(r.a) : '', r.a ? r.a.e : ''])); });
+  S.devs.forEach((d, i) => { const nm = accNums(d); planRows(d).forEach(r => rows.push([i + 1, d.titulo, d.ambito, catName(r.c.k), r.c.t, r.root, r.a ? (nm.get(r.a) || '') : '', r.a ? r.a.a : '', r.a ? r.a.r : '', r.a ? fdate(r.a.f) : '', r.a ? r.a.i : '', r.a ? r.a.imp : '', r.a ? r.a.esf : '', r.a && prioOf(r.a) ? 'Prioridad ' + prioOf(r.a) : ''].concat(verE() ? [r.a ? r.a.e : ''] : []))); });
   if (rows.length === 1){ inform('Sin datos', 'Aún no hay causas ni acciones para exportar.'); return; }
   dl('MIRS-plan-de-accion.csv', 'text/csv;charset=utf-8', '﻿' + rows.map(r => r.map(q).join(';')).join('\r\n'));
 }
