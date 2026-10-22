@@ -86,7 +86,7 @@ h4::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--
 .dlink:hover{text-decoration:underline;text-decoration-color:var(--FondoBarra);text-underline-offset:3px}
 .dlink.vacio{color:var(--gris);font-style:italic;font-weight:600}
 .dmeta{font-size:12px;color:var(--gris)}
-.prog{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;max-width:340px}
+.prog{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;max-width:380px}
 .prog i{height:6px;border-radius:3px;background:#E3E5E2}
 .prog i.ok{background:var(--FondoBarra)}
 .dchips{font-size:12px;color:var(--texto);font-variant-numeric:tabular-nums}
@@ -162,7 +162,35 @@ textarea{resize:vertical;line-height:1.45}
 .campo.root textarea{background:#FFF3E4;border-color:var(--FondoBarra)}
 
 /* Plan de acción */
-.acc{display:grid;grid-template-columns:2fr 1.2fr 1fr 1.4fr 1fr 36px;gap:8px;align-items:end;margin:10px 0}
+.acc{display:grid;grid-template-columns:28px 2fr 1.2fr 1fr 1.4fr 1fr 36px;gap:8px;align-items:end;margin:10px 0;padding-bottom:12px;border-bottom:1px dashed var(--ui-linea)}
+.acc .accn{align-self:center;margin-top:18px}
+.acc2{grid-column:2/-1;display:grid;grid-template-columns:160px 160px 1fr;gap:8px;align-items:end}
+.prio-out{min-height:38px;display:flex;align-items:center}
+.sol{display:grid;grid-template-columns:28px minmax(0,2.4fr) 130px 130px 120px 36px;gap:8px;align-items:end;margin:10px 0}
+.sol .accn{align-self:center;margin-top:18px}
+.plan-h{display:flex;gap:10px;align-items:center;margin-bottom:10px;overflow-wrap:anywhere}
+.acc5{display:grid;grid-template-columns:1.2fr 1fr 1.6fr 1fr;gap:8px;align-items:end}
+
+/* Matriz de priorización (impacto × esfuerzo) */
+.bub{width:28px;height:28px;border-radius:50%;background:#0B6FC2;color:#fff;font-weight:800;font-size:12.5px;display:inline-flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.3);flex:0 0 auto;font-variant-numeric:tabular-nums}
+.bub.off{background:#C9CBC7;box-shadow:none}
+.bub.sm{width:22px;height:22px;font-size:11px;border-width:1px}
+.prio{display:inline-block;border-radius:99px;padding:4px 11px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.prio.pI{background:#FF4B4B;color:#fff}.prio.pII{background:#F8D3D5;color:#8A2E2E}.prio.pIII{background:#D9D9D9;color:#333}.prio.sin{background:#F1F1F0;color:var(--gris);font-weight:600}
+.mx{display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:0;max-width:470px}
+.mx-y{font-weight:700;font-size:12px;color:var(--Negro);padding:0 0 4px}
+.mx-rows{display:grid;grid-template-rows:repeat(3,1fr);align-items:center;font-size:12px;color:var(--texto);border-right:1px solid var(--texto);margin-right:6px}
+.mx-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(70px,auto));gap:3px}
+.mx-c{display:flex;flex-wrap:wrap;gap:5px;align-content:center;justify-content:center;padding:6px}
+.mx-c.pI,.mx-leg .pI{background:#FF4B4B}.mx-c.pII,.mx-leg .pII{background:#F8D3D5}.mx-c.pIII,.mx-leg .pIII{background:#D9D9D9}
+.mx-cols{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;font-size:12px;padding-top:6px}
+.mx-x{text-align:center;font-weight:700;font-size:12px;color:var(--Negro);border-top:1px solid var(--texto);padding-top:4px;margin-top:4px}
+.mx-leg{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-size:12px}
+.mx-leg span{display:inline-flex;align-items:center;gap:6px}
+.mx-leg i{width:22px;height:16px;display:inline-block}
+.resdev{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;align-items:start}
+.resdev h3,.pm h3{margin-top:0}
+.pm{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px;align-items:start}
 
 /* Avisos */
 .banner{display:flex;gap:12px;align-items:center;background:#FFF8E6;border:1px solid #F0D48A;border-left:5px solid var(--FondoBarra);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;font-weight:600}
@@ -239,6 +267,10 @@ body.solo::before{display:none}
 
 @media (max-width:820px){
   .cats{grid-template-columns:1fr}.acc{grid-template-columns:1fr 1fr}.acc .x{width:100%;height:38px}
+  .acc .accn{grid-column:1/-1;margin-top:0}.acc2{grid-column:1/-1;grid-template-columns:1fr 1fr}.acc2 .campo:last-child{grid-column:1/-1}
+  .resdev,.pm{grid-template-columns:1fr}
+  .sol{grid-template-columns:1fr 1fr}.sol .accn{grid-column:1/-1;margin-top:0}.sol .solt{grid-column:1/-1}.sol .x{width:100%}
+  .acc5{grid-template-columns:1fr 1fr}
   .tarjeta{padding:16px 14px}.tab{padding:9px 12px}
   .why .campo.inline{grid-template-columns:1fr;gap:3px}
   #print{padding:14px}
@@ -272,6 +304,12 @@ body.solo::before{display:none}
   #print th,#print td{font-size:10px!important;padding:3px 6px!important}
   #print table.lista td.k{width:14%}
   .fishp .fish{min-width:0;width:100%;height:auto;max-height:104mm;margin:0 auto}
+  #print .pm{grid-template-columns:1.6fr 1fr}
+  #print .pm .prio,#print .pm span.est{padding:2px 6px;font-size:9px}
+  #print .mx{grid-template-columns:44px minmax(0,1fr)}
+  #print .mx-rows,#print .mx-y,#print .mx-cols,#print .mx-x,#print .mx-leg{font-size:10px}
+  #print .mx-grid{grid-template-rows:repeat(3,minmax(22mm,auto))}
+  #print .bub{width:22px;height:22px;font-size:10px}
 }
 </style>
 
@@ -531,6 +569,48 @@ function buildSlides(D) {
         return head(idc, title, devTag(d)) + sub(idc, d) + table(idc(), '5 porqués', 0.5, 1.12, cw, rows);
       }));
     }
+    // 5b) Matriz de priorización (impacto × esfuerzo)
+    if (d.mx && d.mx.length) {
+      const PF = {'I':'FF4B4B', 'II':'F8D3D5', 'III':'D9D9D9'};
+      const PRI = {'Alto|Bajo':'I','Alto|Medio':'I','Alto|Alto':'II','Medio|Bajo':'I','Medio|Medio':'I','Medio|Alto':'III','Bajo|Bajo':'II','Bajo|Medio':'III','Bajo|Alto':'III'};
+      const IM = ['Alto','Medio','Bajo'], ES = ['Bajo','Medio','Alto'];
+      const cw = [0.45, 3.35, 1.05], sz = 10;
+      const hs = d.mx.map(r => estRow([String(r.n), r.a, 'Prioridad III'], cw, sz));
+      const pages = chunkRows(d.mx, hs, 3.4);
+      pages.forEach((pg, pi) => mk(idc => {
+        const rows = [hdr(['N°', 'Acción', 'Prioridad'], 11)].concat(pg.map((r, i) => ({h: 0.4, cells: [
+          {t: String(r.n), sz, b: 1, al: 'ctr', anchor: 't', fill: zebra(i)}, {t: r.a || '—', sz, anchor: 't', fill: zebra(i)},
+          {t: r.p ? 'Prioridad ' + r.p : 'Sin calificar', sz, b: 1, al: 'ctr', anchor: 't', c: r.p === 'I' ? 'FFFFFF' : DARK, fill: r.p ? PF[r.p] : zebra(i)}]})));
+        let s = head(idc, 'Matriz de priorización' + (pages.length > 1 ? ` (${pi + 1}/${pages.length})` : ''), devTag(d)) + sub(idc, d) + table(idc(), 'Acciones', 0.5, 1.12, cw, rows);
+        const gx = 6.75, gy = 1.15, cs = 0.86, gap = 0.04;
+        s += shape(idc(), 'Eje impacto', 5.55, gy, 0.7, 0.25, para('Impacto', {sz: 10, b: 1, c: DARK}), {ins: 0});
+        IM.forEach((im, r) => {
+          s += shape(idc(), 'Fila ' + im, 6.0, gy + r * (cs + gap), 0.68, cs, para(im, {sz: 10, c: GRAY, al: 'r'}), {ins: 0.02, anchor: 'ctr'});
+          ES.forEach((es, c) => {
+            const p = PRI[im + '|' + es], x = gx + c * (cs + gap), y = gy + r * (cs + gap);
+            s += shape(idc(), 'Celda ' + im + ' ' + es, x, y, cs, cs, null, {fill: PF[p], box: false});
+            const items = d.mx.filter(m => m.imp === im && m.esf === es);
+            const bd = items.length > 6 ? 0.2 : 0.26, st = bd + 0.04, per = Math.max(1, Math.floor((cs - 0.04) / st));
+            const rowsN = Math.ceil(items.length / per);
+            items.forEach((m, k) => {
+              const row = Math.floor(k / per), col = k % per, nRow = Math.min(per, items.length - row * per);
+              const bx = x + (cs - nRow * st + 0.04) / 2 + col * st, by = y + (cs - rowsN * st + 0.04) / 2 + row * st;
+              s += shape(idc(), 'Acción ' + m.n, bx, by, bd, bd, para(String(m.n), {sz: bd < 0.25 ? 8 : 9, b: 1, c: 'FFFFFF', al: 'ctr'}), {fill: '0B6FC2', line: 'FFFFFF', lw: 1, geom: 'ellipse', box: false, anchor: 'ctr', ins: 0});
+            });
+          });
+        });
+        const by0 = gy + 3 * (cs + gap);
+        ES.forEach((es, c) => { s += shape(idc(), 'Col ' + es, gx + c * (cs + gap), by0, cs, 0.25, para(es, {sz: 10, c: GRAY, al: 'ctr'}), {ins: 0}); });
+        s += line(idc(), gx, by0 + 0.3, gx + 3 * cs + 2 * gap, by0 + 0.3, '8C8C8C', 0.75);
+        s += shape(idc(), 'Eje esfuerzo', gx, by0 + 0.33, 3 * cs + 2 * gap, 0.25, para('Esfuerzo', {sz: 10, b: 1, c: DARK, al: 'ctr'}), {ins: 0});
+        [['I', 'Prioridad I'], ['II', 'Prioridad II'], ['III', 'Prioridad III']].forEach((l, k) => {
+          const lx = 5.75 + k * 1.25, ly = 4.75;
+          s += shape(idc(), 'Leyenda ' + l[0], lx, ly, 0.22, 0.17, null, {fill: PF[l[0]], box: false});
+          s += shape(idc(), 'Texto ' + l[0], lx + 0.27, ly - 0.04, 0.95, 0.25, para(l[1], {sz: 9, c: GRAY}), {ins: 0});
+        });
+        return s;
+      }));
+    }
     // 6) Plan de acción
     {
       const cw = [1.9, 2.5, 1.2, 0.85, 1.65, 0.9], sz = 10;
@@ -623,7 +703,11 @@ const CATS = [
   {k:'am', n:'Medio ambiente',   h:'Condiciones físicas, clima, orden y limpieza'}
 ];
 const ESTADOS = ['Pendiente','En curso','Cerrada'];
-const STEPS = ['Descripción','Ishikawa','5 porqués','Plan de acción'];
+const IMPS = ['Alto','Medio','Bajo'], ESFS = ['Bajo','Medio','Alto'];
+const PRIO = {'Alto|Bajo':'I','Alto|Medio':'I','Alto|Alto':'II','Medio|Bajo':'I','Medio|Medio':'I','Medio|Alto':'III','Bajo|Bajo':'II','Bajo|Medio':'III','Bajo|Alto':'III'};
+const prioOf = a => (a && PRIO[a.imp + '|' + a.esf]) || '';
+const prioPill = a => { const p = prioOf(a); return p ? `<span class="prio p${p}">Prioridad ${p}</span>` : '<span class="prio sin">Sin calificar</span>'; };
+const STEPS = ['Descripción','Ishikawa','5 porqués','Matriz de priorización','Plan de acción'];
 const TEXT_KEYS = ['titulo','ambito','que','donde','impacto','evidencia'];
 const slug = s => String(s).replace(/\s+/g, '-');
 const uid = () => 'c' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
@@ -651,7 +735,7 @@ function normDev(x){
   t.evid = Array.isArray(x.evid) ? x.evid.filter(e => e && typeof e.id === 'string').map(e => ({id:e.id, name:String(e.name || 'archivo'), type:String(e.type || ''), size:+e.size || 0, added:String(e.added || '')})) : [];
   try { t.acciones = (x.acciones && typeof x.acciones === 'object') ? JSON.parse(JSON.stringify(x.acciones)) : {}; } catch(e) { t.acciones = {}; }
   for (const id in t.whys) { const w = t.whys[id]; if (!w || typeof w !== 'object') { delete t.whys[id]; continue; } if (!Array.isArray(w.w)) w.w = []; w.w = w.w.map(v => String(v || '')); w.root = String(w.root || ''); }
-  for (const id in t.acciones) { if (!Array.isArray(t.acciones[id])) { delete t.acciones[id]; continue; } t.acciones[id] = t.acciones[id].filter(Boolean).map(a => ({a:String(a.a || ''), r:String(a.r || ''), f:String(a.f || ''), i:String(a.i || ''), e:ESTADOS.includes(a.e) ? a.e : 'Pendiente'})); }
+  for (const id in t.acciones) { if (!Array.isArray(t.acciones[id])) { delete t.acciones[id]; continue; } t.acciones[id] = t.acciones[id].filter(Boolean).map(a => ({a:String(a.a || ''), r:String(a.r || ''), f:String(a.f || ''), i:String(a.i || ''), e:ESTADOS.includes(a.e) ? a.e : 'Pendiente', imp:IMPS.includes(a.imp) ? a.imp : '', esf:ESFS.includes(a.esf) ? a.esf : ''})); }
   return t;
 }
 function normalize(o, dropEmpty){
@@ -863,7 +947,7 @@ function ensureWhy(d, id){
 }
 function ensureAcc(d, id){
   const a = d.acciones[id] || (d.acciones[id] = []);
-  if (!a.length) a.push({a:'', r:'', f:'', i:'', e:'Pendiente'});
+  if (!a.length) a.push({a:'', r:'', f:'', i:'', e:'Pendiente', imp:'', esf:''});
   return a;
 }
 const rootOf = (d, id) => String((d.whys[id] && d.whys[id].root) || '').trim();
@@ -879,12 +963,13 @@ function planRows(d){
 }
 function devStats(d){
   const L = causeList(d);
-  let roots = 0, acc = 0, done = 0, rootsNoAcc = 0;
+  let roots = 0, acc = 0, done = 0, rootsNoAcc = 0, rated = 0, planned = 0;
   L.forEach(c => {
     const has = !!rootOf(d, c.id);
     const as = (d.acciones[c.id] || []).filter(a => a.a.trim());
     if (has) roots++;
     acc += as.length; done += as.filter(a => a.e === 'Cerrada').length;
+    if (has) { rated += as.filter(a => prioOf(a)).length; planned += as.filter(a => a.r.trim() && a.f).length; }
     if (has && !as.length) rootsNoAcc++;
   });
   let est;
@@ -892,7 +977,7 @@ function devStats(d){
   else if (!L.length || roots < L.length || rootsNoAcc || !acc) est = ['En análisis', 'a'];
   else if (done === acc) est = ['Cerrada', 'c'];
   else est = ['Plan en curso', 'p'];
-  const segs = [!!d.titulo.trim(), L.length > 0, L.length > 0 && roots === L.length, roots > 0 && !rootsNoAcc && acc > 0];
+  const segs = [!!d.titulo.trim(), L.length > 0, L.length > 0 && roots === L.length, roots > 0 && !rootsNoAcc && acc > 0 && rated === acc, acc > 0 && planned === acc];
   return {nC:L.length, roots, acc, done, est, segs};
 }
 const devTitle = (d, i) => 'Desviación ' + (i + 1) + (d.titulo.trim() ? ': ' + d.titulo.trim() : '');
@@ -972,7 +1057,8 @@ function metaPanel(){
       <li><b>Descripción:</b> define la desviación, su ámbito (faena o laboratorio), impacto y evidencia.</li>
       <li><b>Ishikawa:</b> escribe las causas inmediatas en su categoría. El diagrama se dibuja solo.</li>
       <li><b>5 porqués:</b> cada causa inmediata aparece sola. Responde los porqués; la causa raíz se completa sola con el último y puedes editarla.</li>
-      <li><b>Plan de acción:</b> cada causa raíz aparece sola para que le asignes acciones, responsable, fecha y estado.</li>
+      <li><b>Matriz de priorización:</b> para cada causa raíz propones soluciones y calificas su impacto y esfuerzo; la matriz las ordena por prioridad.</li>
+      <li><b>Plan de acción:</b> a cada solución le asignas responsable, fecha, indicador de cierre y estado.</li>
       <li><b>Resumen:</b> junta todas las desviaciones. Desde ahí generas la PPT MIRS, el informe para PDF o la tabla CSV para Excel.</li>
     </ol>
     <p class="nota">${esc(storeMsg())}</p>
@@ -993,7 +1079,7 @@ function listItems(){
       <div class="dbody">
         <button class="dlink${d.titulo.trim() ? '' : ' vacio'}" data-act="open" data-i="${i}">${esc(d.titulo.trim() || 'Sin título todavía')}</button>
         ${meta ? `<div class="dmeta">${meta}</div>` : ''}
-        <div class="prog" title="Descripción · Ishikawa · 5 porqués · Plan de acción">${st.segs.map((ok, k) => `<i class="${ok ? 'ok' : ''}" title="${STEPS[k]}${ok ? ' ✓' : ''}"></i>`).join('')}</div>
+        <div class="prog" title="${STEPS.join(' · ')}">${st.segs.map((ok, k) => `<i class="${ok ? 'ok' : ''}" title="${STEPS[k]}${ok ? ' ✓' : ''}"></i>`).join('')}</div>
         <div class="dchips">${st.nC} causa(s) inmediata(s) · ${st.roots}/${st.nC} causa(s) raíz · ${st.acc} acción(es)${st.acc ? ` (${st.done} cerrada${st.done === 1 ? '' : 's'})` : ''}${(d.evid || []).length ? ` · 📎 ${d.evid.length} archivo(s)` : ''}</div>
       </div>
       <div class="dside"><span class="pill ${st.est[1]}">${st.est[0]}</span>
@@ -1020,11 +1106,12 @@ function devPanel(di){
   const d = S.devs[di], L = causeList(d);
   const roots = L.filter(c => rootOf(d, c.id)).length;
   const accs = L.reduce((n, c) => n + ((d.acciones[c.id] || []).filter(a => a.a.trim()).length), 0);
-  const badge = [d.titulo.trim() ? '✓' : '', L.length || '', roots || '', accs || ''];
+  const planned = accList(d).filter(x => x.a.r.trim() && x.a.f).length;
+  const badge = [d.titulo.trim() ? '✓' : '', L.length || '', roots || '', accs || '', planned || ''];
   const pills = STEPS.map((t, i) => `<button class="step${ui.step === i + 1 ? ' on' : ''}" data-act="step" data-s="${i + 1}">${i + 1}. ${t}${badge[i] !== '' ? `<small>(${badge[i]})</small>` : ''}</button>`).join('');
-  const body = [step1, step2, step3, step4][ui.step - 1](di);
+  const body = [step1, step2, step3, step4, step5][ui.step - 1](di);
   const prev = ui.step > 1 ? `<button class="btn" data-act="step" data-s="${ui.step - 1}">← ${STEPS[ui.step - 2]}</button>` : '<span></span>';
-  const next = ui.step < 4 ? `<button class="btn pri" data-act="step" data-s="${ui.step + 1}">${STEPS[ui.step]} →</button>`
+  const next = ui.step < STEPS.length ? `<button class="btn pri" data-act="step" data-s="${ui.step + 1}">${STEPS[ui.step]} →</button>`
     : (di < S.devs.length - 1 ? `<button class="btn pri" data-act="open" data-i="${di + 1}">Desviación ${di + 2} →</button>`
       : `<span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="newdev">＋ Nueva desviación</button><button class="btn pri" data-act="tab" data-t="res">Ver resumen →</button></span>`);
   const jump = S.devs.length > 1 ? `<select id="jump" aria-label="Ir a otra desviación">${S.devs.map((x, i) => `<option value="${i}"${i === di ? ' selected' : ''}>${esc(devTitle(x, i).slice(0, 70))}</option>`).join('')}</select>` : '';
@@ -1087,28 +1174,73 @@ function step4(di){
   const withRoot = L.filter(c => { ensureWhy(d, c.id); return rootOf(d, c.id); });
   if (!withRoot.length) return `<div class="banner">Aún no hay causas raíz. Completa los 5 porqués (paso 3) y aparecerán aquí solas.</div>`;
   const miss = L.length - withRoot.length;
+  withRoot.forEach(c => ensureAcc(d, c.id));
+  const nm = accNums(d);
   return (miss ? `<div class="banner falta">Faltan causas raíz en ${miss} causa(s) inmediata(s) (paso 3).</div>` : '') +
+  `<div class="banner">Propón una o más soluciones para cada causa raíz y califica su impacto y esfuerzo. La matriz las ubica solas; en el paso 5 les asignas responsable y fecha.</div>` +
   withRoot.map(c => {
-    const w = d.whys[c.id], acs = ensureAcc(d, c.id);
+    const w = d.whys[c.id], acs = d.acciones[c.id];
     return `<div class="sub"><div class="whyhead"><span class="tag raiz">Causa raíz</span><strong>${esc(w.root)}</strong>
       <div class="muted small" style="margin-top:4px">Causa inmediata: ${esc(c.t)} (${esc(catName(c.k))})</div></div>
-      ${acs.map((a, i) => { const b = `devs.${di}.acciones.${c.id}.${i}.`; return `<div class="acc">
-        ${fld('Acción correctiva / preventiva', b + 'a')}
-        ${fld('Responsable', b + 'r')}
-        ${fld('Fecha compromiso', b + 'f', {type:'date'})}
-        ${fld('Indicador o evidencia de cierre', b + 'i')}
-        ${fld('Estado', b + 'e', {sel:ESTADOS, est:1})}
-        <button class="x" title="Quitar acción" aria-label="Quitar acción" data-act="delacc" data-d="${di}" data-id="${c.id}" data-i="${i}" style="height:38px">✕</button></div>`; }).join('')}
-      <button class="btn sm" data-act="addacc" data-d="${di}" data-id="${c.id}">＋ Agregar otra acción</button></div>`;
-  }).join('');
+      ${acs.map((a, i) => { const b = `devs.${di}.acciones.${c.id}.${i}.`, n = nm.get(a); return `<div class="sol">
+        <span class="bub accn${n ? '' : ' off'}" data-accn="${c.id}:${i}" title="N° de la acción en la matriz">${n || '–'}</span>
+        ${fld('Solución / acción propuesta', b + 'a', {ph:'Qué se hará para eliminar la causa raíz', cls:'solt'})}
+        ${fld('Impacto', b + 'imp', {sel:IMPS})}${fld('Esfuerzo', b + 'esf', {sel:ESFS})}
+        <div class="campo"><span>Prioridad</span><div class="prio-out" data-prio="${c.id}:${i}">${prioPill(a)}</div></div>
+        <button class="x" title="Quitar solución" aria-label="Quitar solución" data-act="delacc" data-d="${di}" data-id="${c.id}" data-i="${i}" style="height:38px">✕</button></div>`; }).join('')}
+      <button class="btn sm" data-act="addacc" data-d="${di}" data-id="${c.id}">＋ Agregar otra solución</button></div>`;
+  }).join('') + `<div class="sub"><h3>Matriz de priorización</h3>
+    <p class="muted small" style="margin:0 0 10px">Prioridad I se ejecuta primero, luego la II y al final la III.</p>
+    <div id="mxwrap">${matrixHTML(d)}</div></div>`;
 }
 
+function step5(di){
+  const d = S.devs[di], L = accList(d);
+  if (!L.length) return `<div class="banner">Aún no hay soluciones. Defínelas en el paso 4 (Matriz de priorización) y aparecerán aquí ordenadas por prioridad.</div>`;
+  const ord = {'I':0, 'II':1, 'III':2, '':3};
+  const rows = L.slice().sort((x, y) => ord[prioOf(x.a)] - ord[prioOf(y.a)] || x.n - y.n);
+  const sin = L.filter(x => !prioOf(x.a)).length;
+  return (sin ? `<div class="banner falta">${sin} solución(es) sin calificar en la matriz (paso 4).</div>` : '') +
+    `<div class="banner">Las acciones aparecen ordenadas por prioridad. Asigna responsable, fecha compromiso, indicador de cierre y estado.</div>` +
+    rows.map(x => { const i = d.acciones[x.c.id].indexOf(x.a), b = `devs.${di}.acciones.${x.c.id}.${i}.`; return `<div class="sub">
+      <div class="plan-h"><span class="bub">${x.n}</span><div style="min-width:0;flex:1"><strong>${esc(x.a.a)}</strong>
+        <div class="muted small" style="margin-top:2px">Causa raíz: ${esc(x.root)}</div></div>${prioPill(x.a)}</div>
+      <div class="acc5">${fld('Responsable', b + 'r')}${fld('Fecha compromiso', b + 'f', {type:'date'})}${fld('Indicador o evidencia de cierre', b + 'i')}${fld('Estado', b + 'e', {sel:ESTADOS, est:1})}</div></div>`; }).join('');
+}
+
+function accList(d){
+  const out = [];
+  causeList(d).forEach(c => { const root = rootOf(d, c.id); if (!root) return;
+    (d.acciones[c.id] || []).forEach(a => { if (a.a.trim()) out.push({n:out.length + 1, a, c, root}); }); });
+  return out;
+}
+const accNums = d => new Map(accList(d).map(x => [x.a, x.n]));
+function matrixHTML(d){
+  const L = accList(d);
+  if (!L.length) return '<p class="muted small">Agrega acciones en el plan para verlas en la matriz.</p>';
+  const cells = IMPS.map(im => ESFS.map(es => {
+    const p = PRIO[im + '|' + es], bs = L.filter(x => x.a.imp === im && x.a.esf === es);
+    return `<div class="mx-c p${p}">${bs.map(x => `<span class="bub" title="${esc(x.n + '. ' + x.a.a)}">${x.n}</span>`).join('')}</div>`;
+  }).join('')).join('');
+  const sin = L.filter(x => !prioOf(x.a)).map(x => x.n);
+  return `<div class="mx"><div class="mx-y">Impacto</div><div></div><div class="mx-rows">${IMPS.map(x => `<span>${x}</span>`).join('')}</div><div class="mx-grid">${cells}</div>
+    <div></div><div class="mx-cols">${ESFS.map(x => `<span>${x}</span>`).join('')}</div><div></div><div class="mx-x">Esfuerzo</div></div>
+    <div class="mx-leg"><span><i class="pI"></i>Prioridad I</span><span><i class="pII"></i>Prioridad II</span><span><i class="pIII"></i>Prioridad III</span></div>
+    ${sin.length ? `<p class="muted small" style="margin:6px 0 0">Sin calificar (falta impacto o esfuerzo): acción ${sin.join(', ')}</p>` : ''}`;
+}
+function updateMx(di){
+  const d = S.devs[di]; if (!d) return;
+  const w = document.getElementById('mxwrap'); if (w) w.innerHTML = matrixHTML(d);
+  const nm = accNums(d);
+  app.querySelectorAll('[data-accn]').forEach(el => { const [cid, i] = el.dataset.accn.split(':'); const a = (d.acciones[cid] || [])[+i]; const n = a && nm.get(a); el.textContent = n || '–'; el.classList.toggle('off', !n); });
+  app.querySelectorAll('[data-prio]').forEach(el => { const [cid, i] = el.dataset.prio.split(':'); const a = (d.acciones[cid] || [])[+i]; el.innerHTML = a ? prioPill(a) : ''; });
+}
 function planTable(d, forPrint){
-  const rows = planRows(d);
+  const rows = planRows(d), nm = accNums(d);
   if (!rows.length) return '<p class="muted">Sin causas inmediatas todavía.</p>';
-  return `<div class="desliza"><table class="lista"><thead><tr><th>Causa inmediata</th><th>Causa raíz</th><th>Acción</th><th>Responsable</th><th>Fecha</th>${forPrint ? '<th>Indicador / evidencia</th>' : ''}<th>Estado</th></tr></thead><tbody>
+  return `<div class="desliza"><table class="lista"><thead><tr><th>Causa inmediata</th><th>Causa raíz</th><th>N°</th><th>Acción</th><th>Responsable</th><th>Fecha</th>${forPrint ? '<th>Indicador / evidencia</th>' : ''}<th>Prioridad</th><th>Estado</th></tr></thead><tbody>
   ${rows.map(r => `<tr>${r.first ? `<td rowspan="${r.span}">${esc(r.c.t)}<br><span class="muted small">${esc(catName(r.c.k))}</span></td><td rowspan="${r.span}">${esc(r.root) || '—'}</td>` : ''}
-    <td>${r.a ? esc(r.a.a) : '—'}</td><td>${r.a ? esc(r.a.r) : ''}</td><td>${r.a ? fdate(r.a.f) : ''}</td>${forPrint ? `<td>${r.a ? esc(r.a.i) : ''}</td>` : ''}<td>${r.a ? `<span class="est est-${slug(r.a.e)}">${esc(r.a.e)}</span>` : ''}</td></tr>`).join('')}</tbody></table></div>`;
+    <td>${r.a && nm.get(r.a) ? `<span class="bub sm">${nm.get(r.a)}</span>` : ''}</td><td>${r.a ? esc(r.a.a) : '—'}</td><td>${r.a ? esc(r.a.r) : ''}</td><td>${r.a ? fdate(r.a.f) : ''}</td>${forPrint ? `<td>${r.a ? esc(r.a.i) : ''}</td>` : ''}<td>${r.a && nm.get(r.a) ? prioPill(r.a) : ''}</td><td>${r.a ? `<span class="est est-${slug(r.a.e)}">${esc(r.a.e)}</span>` : ''}</td></tr>`).join('')}</tbody></table></div>`;
 }
 
 function resPanel(){
@@ -1117,7 +1249,7 @@ function resPanel(){
   return `<section class="vista">
   ${pptCard()}
   <div class="stats"><div class="stat o"><b>${S.devs.length}</b>desviaciones</div><div class="stat"><b>${nC}</b>causas inmediatas</div><div class="stat p"><b>${nR}</b>causas raíz</div><div class="stat v"><b>${nA}</b>acciones (${nDone} cerradas)</div></div>
-  ${S.devs.length ? S.devs.map((d, i) => `<div class="tarjeta">${secH(i + 1, esc(devTitle(d, i)))}${planTable(d, false)}
+  ${S.devs.length ? S.devs.map((d, i) => `<div class="tarjeta">${secH(i + 1, esc(devTitle(d, i)))}<div class="resdev"><div style="min-width:0">${planTable(d, false)}</div>${accList(d).length ? `<div><h3>Matriz de priorización</h3>${matrixHTML(d)}</div>` : ''}</div>
      <div style="margin-top:10px"><button class="btn sm" data-act="open" data-i="${i}">Abrir desviación</button></div></div>`).join('')
     : `<div class="tarjeta"><p class="muted" style="margin:0">Aún no hay desviaciones. <button class="btn sm" data-act="newdev">＋ Nueva desviación</button></p></div>`}
   <div class="tarjeta">${secH('✓', 'Conclusiones', 'Qué patrón común aparece entre las causas raíz y qué acción tendría más impacto. Cada línea es una conclusión en la PPT (máx. 4).')}
@@ -1157,6 +1289,7 @@ app.addEventListener('input', e => {
   if (t.tagName === 'SELECT' && t.classList.contains('est')) t.className = 'est est-' + slug(t.value);
   if (p[0] === 'devs'){
     const di = +p[1], d = S.devs[di];
+    if (p[2] === 'acciones') updateMx(di);
     if (p[2] === 'titulo' || p[2] === 'causas'){ const w = app.querySelector('#fishwrap'); if (w) w.innerHTML = fish(d, 'v'); }
     if (p[2] === 'titulo'){ const h = app.querySelector('.sec-h .tt'); if (h) h.textContent = devTitle(d, di); }
     if (p[2] === 'whys'){
@@ -1207,7 +1340,7 @@ app.addEventListener('click', async e => {
     if (!d.causas[ck].length) d.causas[ck].push({id:uid(), t:''});
     delete d.whys[id]; delete d.acciones[id]; save(); render();
   }
-  else if (a === 'addacc'){ S.devs[di].acciones[b.dataset.id].push({a:'', r:'', f:'', i:'', e:'Pendiente'}); save(); render(); }
+  else if (a === 'addacc'){ S.devs[di].acciones[b.dataset.id].push({a:'', r:'', f:'', i:'', e:'Pendiente', imp:'', esf:''}); save(); render(); }
   else if (a === 'delacc'){
     const arr = S.devs[di].acciones[b.dataset.id], x = arr[+b.dataset.i];
     if (x && (x.a.trim() || x.r.trim() || x.i.trim()) && !(await ask('¿Quitar esta acción?', `<b>${esc(x.a.trim() || 'Acción sin descripción')}</b>`, 'Quitar acción', true))) return;
@@ -1259,8 +1392,7 @@ function buildPrint(urls = {}){
     h += `<section class="pg"><h2>${ttl(d, di)}</h2><h3>Análisis RCA: 5 porqués</h3>`;
     h += L.length ? `<div class="desliza"><table class="lista"><thead><tr><th>Categoría</th><th>Causa inmediata</th><th>¿Por qué? 1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>Causa raíz</th></tr></thead><tbody>
       ${L.map(c => { const w = d.whys[c.id] || {w:['','','','',''], root:''}; return `<tr><td>${esc(catName(c.k))}</td><td>${esc(c.t)}</td>${[0,1,2,3,4].map(i => `<td>${esc(w.w[i] || '')}</td>`).join('')}<td><b>${esc(w.root)}</b></td></tr>`; }).join('')}</tbody></table></div>` : '<p>—</p>';
-    const plan = `<h3>Plan de acción</h3>${planTable(d, true)}`;
-    h += L.length > 5 ? `</section><section class="pg"><h2>${ttl(d, di)}</h2>${plan}</section>` : `${plan}</section>`;
+    h += `</section><section class="pg"><h2>${ttl(d, di)}</h2><div class="pm"><div style="min-width:0"><h3>Plan de acción</h3>${planTable(d, true)}</div>${accList(d).length ? `<div><h3>Matriz de priorización</h3>${matrixHTML(d)}</div>` : ''}</div></section>`;
   });
   h += `<section class="pg"><h2>Resumen y conclusiones</h2>${S.devs.map((d, i) => `<h3>${ttl(d, i)}</h3>${planTable(d, false)}`).join('')}
   <h3>Conclusiones</h3><p>${esc(S.conclusiones).replace(/\n/g, '<br>') || '—'}</p></section>`;
@@ -1304,7 +1436,8 @@ function pptData(){
         const acc = (d.acciones[c.id] || []).filter(a => a.a.trim() || a.r.trim() || a.f || a.i.trim()).map(a => ({a:a.a.trim(), r:a.r.trim(), f:fdate(a.f), i:a.i.trim(), e:a.e}));
         return {cat:c.k, catName:catName(c.k), t:c.t, whys:w.w.map(x => x.trim()).filter(Boolean), root:rootOf(d, c.id), acc};
       }),
-      fish:CATS.map(c => ({name:c.n, items:L.filter(x => x.k === c.k).map(x => x.t)}))});
+      fish:CATS.map(c => ({name:c.n, items:L.filter(x => x.k === c.k).map(x => x.t)})),
+      mx:accList(d).map(x => ({n:x.n, a:x.a.a.trim(), root:x.root, imp:x.a.imp, esf:x.a.esf, p:prioOf(x.a)}))});
   });
   const m = S.meta;
   return {meta:{nombre:m.nombre.trim(), area:m.area, resp:m.resp.trim(), fecha:fdate(m.fecha)}, devs, concl:S.conclusiones};
@@ -1321,6 +1454,8 @@ function readiness(){
     const sr = L.filter(c => !rootOf(d, c.id)).length;
     if (sr) w.push(p + sr + ' causa(s) inmediata(s) sin causa raíz');
     const sa = L.filter(c => rootOf(d, c.id) && !(d.acciones[c.id] || []).some(a => a.a.trim())).length;
+    const sp = accList(d).filter(x => !prioOf(x.a)).length;
+    if (sp) w.push(p + sp + ' acción(es) sin calificar en la matriz de priorización');
     if (sa) w.push(p + sa + ' causa(s) raíz sin acción en el plan');
   });
   if (!filled) return {fatal:true, w:['Aún no hay ninguna desviación completada']};
@@ -1373,9 +1508,9 @@ async function dl(name, type, content){
 }
 function exportCsv(){
   const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
-  const head = ['Desviación','Título','Ámbito','Categoría','Causa inmediata','Causa raíz','Acción','Responsable','Fecha','Indicador','Estado'];
+  const head = ['Desviación','Título','Ámbito','Categoría','Causa inmediata','Causa raíz','N° acción','Acción','Responsable','Fecha','Indicador','Impacto','Esfuerzo','Prioridad','Estado'];
   const rows = [head];
-  S.devs.forEach((d, i) => planRows(d).forEach(r => rows.push([i + 1, d.titulo, d.ambito, catName(r.c.k), r.c.t, r.root, r.a ? r.a.a : '', r.a ? r.a.r : '', r.a ? fdate(r.a.f) : '', r.a ? r.a.i : '', r.a ? r.a.e : ''])));
+  S.devs.forEach((d, i) => { const nm = accNums(d); planRows(d).forEach(r => rows.push([i + 1, d.titulo, d.ambito, catName(r.c.k), r.c.t, r.root, r.a ? (nm.get(r.a) || '') : '', r.a ? r.a.a : '', r.a ? r.a.r : '', r.a ? fdate(r.a.f) : '', r.a ? r.a.i : '', r.a ? r.a.imp : '', r.a ? r.a.esf : '', r.a && prioOf(r.a) ? 'Prioridad ' + prioOf(r.a) : '', r.a ? r.a.e : ''])); });
   if (rows.length === 1){ inform('Sin datos', 'Aún no hay causas ni acciones para exportar.'); return; }
   dl('MIRS-plan-de-accion.csv', 'text/csv;charset=utf-8', '﻿' + rows.map(r => r.map(q).join(';')).join('\r\n'));
 }
